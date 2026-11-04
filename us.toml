@@ -1,0 +1,178 @@
+# N64Recomp's configuration for Donald Duck: Goin' Quackers (USA), SHA-1 e31a7567d408c890065029ba537f830765b17d94: it
+# reads the game's code out of the ROM by the symbols in syms/ (tools/gen_syms.py, from the ROM alone) and writes
+# RecompiledFuncs/ (tools/recompile.sh). The code is stored raw in the ROM, so there is nothing to decompress first.
+[input]
+# The ROM header's entrypoint, the start of the boot segment.
+entrypoint = 0x80000400
+# Paths are relative to this file.
+symbols_file_path = "syms/ddgq.us.syms.toml"
+rom_file_path = "roms/ddgq.us.z64"
+output_func_path = "RecompiledFuncs"
+use_absolute_symbols = true
+
+[patches]
+# libultra's internals (its exception handler, the managers' threads, the raw SI and PI access) are N64Recomp's own
+# ignored functions, by the names syms/ gives them: the runtime replaces what calls them.
+
+# Spins. The runtime runs one game thread at a time and switches only when the running one calls into it, where a
+# console's interrupts preempt any thread. The game waits for its controller thread (func_80084030, woken by the SI's
+# messages) to finish a Controller Pak request by spinning on that thread's state byte, 0x800C0B28, until it is 0
+# (func_80084024 reads it): each pass yields, or the controller thread never runs and the game freezes on the screen
+# after it reads the pak (the "Expansion Pak detected!" screen at boot).
+[[patches.hook]]
+func = "func_800843FC"
+before_vram = 0x80084414
+text = "{ void yield_self(uint8_t*); if (ctx->r2 != 0) yield_self(rdram); }"
+
+[[patches.hook]]
+func = "func_800F7378"
+before_vram = 0x800F75D0
+text = "{ void yield_self(uint8_t*); if (ctx->r2 != 0) yield_self(rdram); }"
+
+# Each frame the main thread waits in func_80084C18 for 0x800CA1F8 to be 0 and 0x800EBA68 to be 1, which the
+# controller thread sets as it finishes reading the controllers: each pass that waits yields.
+[[patches.hook]]
+func = "func_80084C18"
+before_vram = 0x80084C24
+text = "{ void yield_self(uint8_t*); if (ctx->r2 != 0) yield_self(rdram); }"
+
+[[patches.hook]]
+func = "func_80084C18"
+before_vram = 0x80084C3C
+text = "{ void yield_self(uint8_t*); if (ctx->r3 != ctx->r2) yield_self(rdram); }"
+
+# One frame a VI at most. The game's scheduler thread (func_800846E0) counts each retrace in 0x800C0A50, and as a frame
+# starts func_800839EC copies that count to 0x800C0A54, which keys the frame's cache of texture loads: a texture's load
+# block is written into the list once a frame, its address and the frame's count kept in the texture (+0x8, +0xC), and
+# a later draw of it in the same count only calls that block (func_8008AEAC). There is one display list buffer, so a
+# frame that starts in the same VI as the one before calls blocks that frame wrote where its own commands now go: a
+# console's CPU never builds two frames in one VI, the recomp's does in well under a millisecond. Such a call can land
+# on itself, which RT64 follows until the page runs out of memory. So a frame that would start in the VI before's count
+# waits for the next retrace, as each pass yields.
+[[patches.hook]]
+func = "func_800839EC"
+before_vram = 0x80083B2C
+text = "{ void yield_self(uint8_t*); static int32_t last = -1; while (MEM_W(0, (gpr)(int32_t)0x800C0A50) == last) yield_self(rdram); last = MEM_W(0, (gpr)(int32_t)0x800C0A50); MEM_W(0, (gpr)(int32_t)0x800C0A54) = last; }"
+
+# The sound engine's queue of calls (func_800AA59C adds a function and its argument to the array at 0x800DBE24, counted
+# in 0x800DBE1C) has room for 0x800DBE20's count, 250, and never checks it. A synthesizer player (func_800AA5F4) runs
+# and empties it as each audio frame is made, but it is filled at each retrace too: func_800AB198 adds the stop of
+# each voice that has finished, every retrace until the stop runs. The scheduler starts no audio task while the RSP
+# has a graphics task, which in the runtime lasts until RT64 has read its list, so a list that takes long to read (on
+# lavapipe, RT64 building a pipeline on the CPU) makes no audio frames, and after about 84 retraces the queue runs past
+# its end into the voice table the heap put after it (0x800DBDF8). The next retrace calls a voice argument there as a
+# function: "Failed to find function at 0x8019B...". A console's audio never waits that long. So an addition that
+# finds the queue full is dropped: those stops are added again each retrace until the queue has run.
+[[patches.hook]]
+func = "func_800AA59C"
+before_vram = 0x800AA59C
+text = "if (MEM_W(0, (gpr)(int32_t)0x800DBE1C) >= MEM_W(0, (gpr)(int32_t)0x800DBE20)) { ctx->r2 = 1; return; }"
+
+# A menu's backdrop clears black. Each frame func_80082D04 clears the colour image with a fill of the viewport's colour
+# (+0x7C, the level's fog: teal in the Woods of Light), or of black where 0x800C3D65 is set (the Controller Pak's
+# screens). While a menu shows its backdrop (the pause menu and its pages), a script sets 0x800C0640, and
+# func_8008E718 draws the menu's opaque gradient (func_800931E8) over the whole 4:3 in place of the level's sky, so on
+# a console the fill never shows. RT64 widens a fill of the whole screen to the window's edges but keeps the gradient
+# and the swirl drawn over it at 4:3, so in a wide picture the fill showed either side as the level's colour. With
+# 0x800C0640 set the clear takes its black fill.
+[[patches.hook]]
+func = "func_80082D04"
+before_vram = 0x80082EF0
+text = "if (MEM_BU(0, (gpr)(int32_t)0x800C0640) != 0) ctx->r3 = 1;"
+
+# Widescreen culling. func_80093B8C sets a camera up for a frame: its fields of view (+0x64 across, +0x68 up), its
+# projection (guPerspective) and the four planes at +0x98 that the game tests what it draws against, built for 4:3.
+# RT64 widens the 3D to the window but the game left out whatever was past those planes, so in a wide picture objects
+# and pieces of the level popped in and out at its sides. Every camera mode joins at 0x800940E8 with the planes
+# written, where src/game/widescreen.cpp widens the left and right ones as RT64 widens the picture (none at Original).
+[[patches.hook]]
+func = "func_80093B8C"
+before_vram = 0x800940E8
+text = "{ void dq_widen_cull_planes(uint8_t*, gpr); dq_widen_cull_planes(rdram, ctx->r16); }"
+
+# The 2D drawer, func_80091C5C, writes a scaled texture rectangle's command (at a1) from its rectangle struct (s1) at
+# 0x8009268C, where src/game/widescreen.cpp makes a full-screen one (the fades) span the screen so RT64 stretches it
+# across a wide picture, and keeps the tiles of a big image (the title logo's) from overlapping and their texture
+# coordinates inside the tile.
+[[patches.hook]]
+func = "func_80091C5C"
+before_vram = 0x8009268C
+text = "{ void dq_fix_rect(uint8_t*, gpr, gpr); dq_fix_rect(rdram, ctx->r17, ctx->r5); }"
+
+# The sprites' clip to the screen, func_80091AF0, which the 2D drawer (func_80091C5C) draws one through: at its start
+# src/game/widescreen.cpp draws one that reaches past a 4:3 screen's edges out to the wide picture's (none at Original)
+# and returns the list's end, and the game's own clip runs for the rest.
+[[patches.hook]]
+func = "func_80091AF0"
+before_vram = 0x80091AF0
+text = "{ int dq_wide_sprite(uint8_t*, recomp_context*); if (dq_wide_sprite(rdram, ctx)) return; }"
+
+# The HUD's pass, func_800B439C: its bars and icons (until func_800B42C0 returns, at 0x800B464C) and then its text, from
+# func_800BB0F0, until it returns at 0x800B4684. Each bar, icon and letter is a sprite that func_800912C4 has the 2D
+# drawer (func_80091C5C) write at 0x80091778 (the list in a0, its rectangle in a1, the screen in a3) and that ends the
+# list at 0x80091780 (v0), and func_800BB0F0 draws a text entry with func_800BB7FC at 0x800BB29C.
+# src/game/widescreen.cpp draws the HUD from the wide picture's edges there (none at Original).
+[[patches.hook]]
+func = "func_800B439C"
+before_vram = 0x800B439C
+text = "{ void dq_hud_start(); dq_hud_start(); }"
+
+[[patches.hook]]
+func = "func_800B439C"
+before_vram = 0x800B464C
+text = "{ void dq_hud_icons_end(); dq_hud_icons_end(); }"
+
+[[patches.hook]]
+func = "func_800B439C"
+before_vram = 0x800B4684
+text = "{ void dq_hud_end(); dq_hud_end(); }"
+
+[[patches.hook]]
+func = "func_800912C4"
+before_vram = 0x80091778
+text = "{ gpr dq_hud_sprite(uint8_t*, gpr, gpr, gpr); ctx->r4 = dq_hud_sprite(rdram, ctx->r4, ctx->r5, ctx->r7); }"
+
+[[patches.hook]]
+func = "func_800912C4"
+before_vram = 0x80091780
+text = "{ gpr dq_hud_sprite_end(uint8_t*, gpr); ctx->r2 = dq_hud_sprite_end(rdram, ctx->r2); }"
+
+[[patches.hook]]
+func = "func_800BB0F0"
+before_vram = 0x800BB29C
+text = "{ void dq_hud_text_start(uint8_t*); dq_hud_text_start(rdram); }"
+
+[[patches.hook]]
+func = "func_800BB0F0"
+before_vram = 0x800BB2A4
+text = "{ void dq_hud_text_end(uint8_t*); dq_hud_text_end(rdram); }"
+
+# The scene transition's thread, func_80084030, blacks out a pass of the shown framebuffer (a0) at 0x80084134, its map
+# in a3, the pass's level in a1 and the loop's count in v1. src/game/widescreen.cpp does the pass for a wide picture
+# and leaves the loop nothing to do (none at Original).
+[[patches.hook]]
+func = "func_80084030"
+before_vram = 0x80084134
+text = "{ gpr dq_wipe_pass(uint8_t*, gpr, gpr, gpr, gpr); ctx->r3 = dq_wipe_pass(rdram, ctx->r7, ctx->r4, ctx->r5, ctx->r3); }"
+
+# A menu's backdrop gradient: func_800931E8 makes each vertex's colour from its place (its x read into v0 at 0x80093348,
+# the vertex in t0) and then writes the display list that draws them, at 0x80093478. src/game/widescreen.cpp spreads
+# them across a wide picture there (none at Original) and gives the colours the x they had.
+[[patches.hook]]
+func = "func_800931E8"
+before_vram = 0x80093348
+text = "{ gpr dq_backdrop_x(uint8_t*, gpr, gpr); ctx->r2 = dq_backdrop_x(rdram, ctx->r8, ctx->r2); }"
+
+[[patches.hook]]
+func = "func_800931E8"
+before_vram = 0x80093478
+text = "{ void dq_widen_backdrop(uint8_t*); dq_widen_backdrop(rdram); }"
+
+# The idle thread (func_800004C0, once it has started the game's threads) is a watchdog: it waits for the main thread's
+# OSThread state to read 1, libultra's OS_STATE_STOPPED, and then breaks. The runtime keeps its own states in that
+# field, where 1 is QUEUED, so it would break while the game runs. The runtime has no idle thread to stand in for, so
+# it waits there for good and lets the other threads run.
+[[patches.hook]]
+func = "func_800004C0"
+before_vram = 0x80000698
+text = "{ void pause_self(uint8_t*); pause_self(rdram); }"
