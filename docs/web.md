@@ -60,7 +60,8 @@ last section, pause, which goes into the boot's.
 
 ## How it plays
 
-By the regular plan on a desktop GPU, uncapped at 3840x2000 on an idle host, Chrome presents 354 a second (the
-display's 360 holds it, not the page), its longest frame gap 23 ms, with no shader waits, no misses and no WebGPU
-errors; Firefox builds each level's section with the game waiting (half a second or so) and plays with no misses or
-errors, its longest gaps (0.3-0.7 s) as a level changes. Its runs are in N64Recomp-browser's `plays.jsonl` (`r2`).
+By the regular plan on a desktop GPU, uncapped at 3840x2000 on an idle host, Chrome presents 297 a second, with no
+shader waits, no misses and no WebGPU errors; its longest frame gaps (about 1.1 s) are the plan's changes of level.
+Firefox plays it with no misses or errors but slowly: about 49 presents a second, its game's clock a third of the
+rate it runs at in Rayman 2's page played beside it, which presents over 200 there, and its GPU process holds about
+a core. Why is not known yet. Its runs are in N64Recomp-browser's `plays.jsonl` (`ddgq`).
