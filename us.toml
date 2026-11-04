@@ -17,8 +17,8 @@ use_absolute_symbols = true
 # Spins. The runtime runs one game thread at a time and switches only when the running one calls into it, where a
 # console's interrupts preempt any thread. The game waits for its controller thread (func_80084030, woken by the SI's
 # messages) to finish a Controller Pak request by spinning on that thread's state byte, 0x800C0B28, until it is 0
-# (func_80084024 reads it): each pass yields, or the controller thread never runs and the game freezes on the screen
-# after it reads the pak (the "Expansion Pak detected!" screen at boot).
+# (func_80084024 reads it): each pass yields, or the controller thread never runs and the game freezes at boot, on the
+# screen after it reads the pak.
 [[patches.hook]]
 func = "func_800843FC"
 before_vram = 0x80084414
@@ -69,7 +69,7 @@ before_vram = 0x800AA59C
 text = "if (MEM_W(0, (gpr)(int32_t)0x800DBE1C) >= MEM_W(0, (gpr)(int32_t)0x800DBE20)) { ctx->r2 = 1; return; }"
 
 # A menu's backdrop clears black. Each frame func_80082D04 clears the colour image with a fill of the viewport's colour
-# (+0x7C, the level's fog: teal in the Woods of Light), or of black where 0x800C3D65 is set (the Controller Pak's
+# (+0x7C, the level's fog), or of black where 0x800C3D65 is set (the Controller Pak's
 # screens). While a menu shows its backdrop (the pause menu and its pages), a script sets 0x800C0640, and
 # func_8008E718 draws the menu's opaque gradient (func_800931E8) over the whole 4:3 in place of the level's sky, so on
 # a console the fill never shows. RT64 widens a fill of the whole screen to the window's edges but keeps the gradient

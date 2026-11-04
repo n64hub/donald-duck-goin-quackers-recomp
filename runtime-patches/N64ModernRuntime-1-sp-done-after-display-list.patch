@@ -5,7 +5,7 @@
                  // is finished as well, so sending this early shouldn't be an issue in most cases.
                  // If this causes issues then the logic can be replaced with responding to yield requests.
 -                sp_complete();
-+                // Rayman 2 does not: it changes what a display list reads once the RSP says it is done, so on a slow
++                // This game does not: it changes what a display list reads once the RSP says it is done, so on a slow
 +                // renderer (lavapipe, a page on a busy host) RT64 read a list that was being rewritten and crashed,
 +                // ran out of memory or lost the GBI. So the RSP is done once RT64 has read the list (send_dl).
                  ultramodern::measure_input_latency();

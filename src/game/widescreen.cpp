@@ -353,7 +353,7 @@ extern "C" void dq_widen_backdrop(uint8_t* rdram) {
     }
 }
 
-// The sprites and particles (a lum's glow, the sparkles as Rayman lands): func_8008C268 projects one on the CPU to a
+// The sprites and particles (glows, sparkles, a puff of dust): func_8008C268 projects one on the CPU to a
 // texture rectangle on the screen, and func_80091AF0 (us.toml's hook at its start calls this) clips it to the 4:3
 // screen before the 2D drawer, func_80091C5C, writes it. RT64 draws such a rectangle where the 3D around it is, at its
 // place in the wide picture's 4:3 middle, so a sprite was cut on a straight line at the 4:3 edges and one wholly past
@@ -440,16 +440,16 @@ extern "C" int dq_wide_sprite(uint8_t* rdram, recomp_context* ctx) {
     return 1;
 }
 
-// The HUD: func_800B439C draws it each frame, its bars (health, air) and then its icons (Rayman's face, the lums' and
-// cages' icons, the column of hints at the right, a race's timer) through func_800B42C0, and then the text on screen
-// through func_800BB0F0 (the counters beside those icons, a dialogue, the intro's story). Each bar and icon is a sprite
+// The HUD: func_800B439C draws it each frame, its bars and then its icons (the counters' icons at the corners, a race's
+// timer) through func_800B42C0, and then the text on screen through func_800BB0F0 (the counters beside those icons, a
+// dialogue, the intro's story). Each bar and icon is a sprite
 // that func_800912C4 places in percent of a 4:3 screen and draws with the 2D drawer, func_80091C5C, so in a wide
 // picture the HUD sat at the 4:3 corners. With RT64's extended GBI each one is drawn from the wide picture's edge
 // instead, as far from it as it was from the 4:3 screen's: one in the top half that starts in the screen's left third
 // and ends left of its right third from the left edge, one that ends in the right third and starts right of the left
 // third from the right edge (offset back by the screen's width), under a scissor that reaches the picture's edges, and
-// the alignment and scissor put back after it. A dialogue's speaker (Murfy's face) is an icon too, in the bottom left
-// beside the dialogue's box, which stays in the middle, and so does it. Text moves only with an icon it sits beside and on
+// the alignment and scissor put back after it. A dialogue's speaker (Daisy's face in the newscast) is an icon too, in
+// the bottom left beside the dialogue's box, which stays in the middle, and so does it. Text moves only with an icon it sits beside and on
 // its side of the screen, so a counter goes with its icon and everything else (a dialogue, the story, a countdown)
 // stays in the middle: a text entry (func_800BB7FC draws one, a sprite a letter) is given room for those commands
 // before it, filled in once its letters say where it is. us.toml's hooks call these, none at Original.

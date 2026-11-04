@@ -1,7 +1,7 @@
-# Rayman 2: Recompiled: the recompiled game (RecompiledFuncs/, from tools/recompile.sh), the patches over it
-# (patches/, PatchesLib), and RecompFrontend's launcher and menus on RT64. The desktop program, and with Emscripten
-# (emcmake cmake; tools/build_web.sh) the page, GoinQuackersRecompiled.html, through lib/N64Recomp-browser/frontend
-# (docs/web.md).
+# Donald Duck: Goin' Quackers Recompiled: the recompiled game (RecompiledFuncs/, from tools/recompile.sh), the patches
+# over it (patches/, PatchesLib), and RecompFrontend's launcher and menus on RT64. The desktop program, and with
+# Emscripten (emcmake cmake; tools/build_web.sh) the page, GoinQuackersRecompiled.html, through
+# lib/N64Recomp-browser/frontend (docs/web.md).
 cmake_minimum_required(VERSION 3.20)
 
 if (APPLE)
@@ -64,6 +64,10 @@ set(RT64_STRETCH_CPU_CHANGES TRUE)
 # (src/game/widescreen.cpp), far past the framebuffer's own: RT64_SCISSOR_INSIDE_FRAMEBUFFER, on with Emscripten and
 # here too, counts it only to the frame's edges, so the 3D of a frame with one is still widened.
 set(RT64_SCISSOR_INSIDE_FRAMEBUFFER ON)
+# The newscast that starts a new game opens behind a grey stone plate the game draws in 3D, just in front of the
+# camera and sized to the 4:3 screen: RT64_STRETCH_SCREEN_COVERS, on with Emscripten and here too, stretches it across
+# a wide picture.
+set(RT64_STRETCH_SCREEN_COVERS ON)
 add_compile_definitions(HLSL_CPU)
 
 if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")

@@ -10,8 +10,8 @@ What is the game's own stays here: the `EMSCRIPTEN` branches of `CMakeLists.txt`
 list's header says how to record it again), the play plans (`tools/play_plan.json`, `tools/play_plan_extended.json`)
 and the survey they share (`tools/survey.js`). The rest is N64Recomp-browser's: `docs/porting.md` (WebGPU and the
 shaders, prebuilt shader lists, Emscripten), `docs/playing.md` (playing and measuring a page), `docs/forks.md` and
-`docs/findings.md`. Every play of this game's page is a line in N64Recomp-browser's `plays.jsonl` (game `r2`), never a
-record here. The page is published at [n64hub.com/rayman-2](https://n64hub.com/rayman-2/).
+`docs/findings.md`. Every play of this game's page is a line in N64Recomp-browser's `plays.jsonl` (game `ddgq`), never a
+record here. The page is published at [n64hub.com/goin-quackers](https://n64hub.com/goin-quackers/).
 
 ## Build it
 
@@ -36,19 +36,19 @@ headers threads need) and open `GoinQuackersRecompiled.html` in Chrome or Firefo
 
 ## The plans
 
-A plan reaches the intro story the way a player does, by the keyboard's defaults (Enter is Start, Space A, WASD the
-stick): Start Game, the logos and the attract demo, Start to the main menu, and A through New Game, a slot and a name.
-The intro story can't be skipped and runs about 100 s, so from there `tools/survey.js` changes level as the game's own
-exits do: it writes the next level's name where the engine reads it and asks for a change of level, and the game loads
-that level. So a plan reaches any level with a new game, without a save. The survey's header has the addresses, found
-by reading RDRAM as the game played (there is no decomp); the waits in a level are on the game's own clock, 60 a
-second of play.
+A plan reaches the world map the way a player does, by the keyboard's defaults (Enter is Start, Space A, WASD the
+stick): Start Game, the logos and the title, Start to the main menu, and A through New Game and the newscast that
+starts one, to the world map (mapmonde). From there `tools/survey.js` changes level as the game's own exits do: it
+writes the next level's name where the engine reads it and asks for a change of level, and the game loads that level.
+So a plan reaches any level with a new game, without a save. The survey's header has the addresses, found by reading
+RDRAM as the game played (there is no decomp); the waits in a level are on the game's own clock, 60 a second of play.
 
-`tools/play_plan.json` (about 2.5 minutes) boots, shoots the menu, watches 25 s of the intro story, then plays the
-prison ship (jail_20) and walks about the Woods of Light (learn_10). `tools/play_plan_extended.json` (about 5
-minutes) goes on to five more levels. `tools/play_plan_levels.json` (about 10 minutes, a release's check) visits
-every level of the game's table in turn, with a shot of each, and goes on past a level that doesn't play, so one play
-shows every level that fails. Play them with N64Recomp-browser's `tools/play_page.mjs` (its `docs/playing.md`).
+`tools/play_plan.json` (about 2.5 minutes) boots, shoots the menu and the world map, then plays the first world's trail
+(trail) with the pause menu, the city's sidewalk (sidewalk) and the haunted house (haunted_3_1).
+`tools/play_plan_extended.json` (about 5 minutes) goes on to four more levels. `tools/play_plan_levels.json` (about 10
+minutes, a release's check) visits every level of the game's table in turn, with a shot of each, and goes on past a
+level that doesn't play, so one play shows every level that fails. Play them with N64Recomp-browser's
+`tools/play_page.mjs` (its `docs/playing.md`).
 
 ## The shader list
 
