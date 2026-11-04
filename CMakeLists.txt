@@ -1,7 +1,7 @@
-# Rayman 2: Recompiled: the recompiled game (RecompiledFuncs/, from tools/recompile.sh), the patches over it
-# (patches/, PatchesLib), and RecompFrontend's launcher and menus on RT64. The desktop program, and with Emscripten
-# (emcmake cmake; tools/build_web.sh) the page, GoinQuackersRecompiled.html, through lib/N64Recomp-browser/frontend
-# (docs/web.md).
+# Donald Duck: Goin' Quackers Recompiled: the recompiled game (RecompiledFuncs/, from tools/recompile.sh), the patches
+# over it (patches/, PatchesLib), and RecompFrontend's launcher and menus on RT64. The desktop program, and with
+# Emscripten (emcmake cmake; tools/build_web.sh) the page, GoinQuackersRecompiled.html, through
+# lib/N64Recomp-browser/frontend (docs/web.md).
 cmake_minimum_required(VERSION 3.20)
 
 if (APPLE)
@@ -57,13 +57,17 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(RT64_STATIC TRUE)
 set(RT64_SDL_WINDOW_VULKAN TRUE)
-# The scene transition is drawn from the CPU, and RT64 stretches what the CPU writes across a wide picture, which
-# src/game/widescreen.cpp writes squeezed in by as much.
+# The scene transition is drawn from the CPU, a pass each retrace blacking out the pixels whose byte in its map is the
+# pass's, and RT64 stretches what the CPU writes across a wide picture, so the black closes in from its edges.
 set(RT64_STRETCH_CPU_CHANGES TRUE)
 # A sprite past the 4:3 edges is drawn under an extended scissor that reaches the window's edges
 # (src/game/widescreen.cpp), far past the framebuffer's own: RT64_SCISSOR_INSIDE_FRAMEBUFFER, on with Emscripten and
 # here too, counts it only to the frame's edges, so the 3D of a frame with one is still widened.
 set(RT64_SCISSOR_INSIDE_FRAMEBUFFER ON)
+# The newscast that starts a new game opens behind a grey stone plate the game draws in 3D, just in front of the
+# camera and sized to the 4:3 screen: RT64_STRETCH_SCREEN_COVERS, on with Emscripten and here too, stretches it across
+# a wide picture.
+set(RT64_STRETCH_SCREEN_COVERS ON)
 add_compile_definitions(HLSL_CPU)
 
 if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -196,6 +200,7 @@ target_sources(GoinQuackersRecompiled PRIVATE
     ${CMAKE_SOURCE_DIR}/src/game/controller_pak.cpp
     ${CMAKE_SOURCE_DIR}/src/game/libultra.cpp
     ${CMAKE_SOURCE_DIR}/src/game/recomp_api.cpp
+    ${CMAKE_SOURCE_DIR}/src/game/transition.cpp
     ${CMAKE_SOURCE_DIR}/src/game/widescreen.cpp
 )
 if (DQ_PATCHES)

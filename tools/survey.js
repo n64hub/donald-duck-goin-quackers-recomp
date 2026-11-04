@@ -1,4 +1,4 @@
-// Rayman 2's survey for the page's plans (N64Recomp-browser's tools/play_page.mjs and record_shaders.mjs load it with an
+// Goin' Quackers' survey for the page's plans (N64Recomp-browser's tools/play_page.mjs and record_shaders.mjs load it with an
 // evalFile step): which level the game is in, and a change of level asked for as the game's own exits ask for one, so
 // a plan reaches a level without playing the intro story or the levels before it. There is no decomp: the addresses
 // were found by reading RDRAM as the game played.
@@ -20,26 +20,26 @@
     return s;
   };
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  const r2 = window.r2 = {
+  const dq = window.dq = {
     mode: () => byte(0x800E1B53),
     level: () => name(0x800E1B54).toLowerCase(),
     clock: () => n64r(0x800C3D24),
     // The level's name and the mode, for a plan's log.
-    where: () => `level ${r2.level() || '-'} mode ${r2.mode()} clock ${r2.clock()}`,
+    where: () => `level ${dq.level() || '-'} mode ${dq.mode()} clock ${dq.clock()}`,
     // Waits up to ms for the game to play the level (mode 9), true once it does.
     playing: async (level, ms = 30000) => {
       for (const t0 = Date.now(); Date.now() - t0 < ms; await sleep(100)) {
-        if (r2.level() === level && r2.mode() === 9) return true;
+        if (dq.level() === level && dq.mode() === 9) return true;
       }
-      console.log(`[survey] not playing ${level} after ${ms} ms: ${r2.where()}`);
+      console.log(`[survey] not playing ${level} after ${ms} ms: ${dq.where()}`);
       return false;
     },
     // Changes to the level (its name as the game's table has it, lower case: learn_10), and waits for it to play.
     go: async (level, ms = 30000) => {
       for (let i = 0; i < 30; i++) setByte(0x800E1B72 + i, i < level.length ? level.charCodeAt(i) : 0);
       setByte(0x800E1B53, 6);
-      const ok = await r2.playing(level, ms);
-      console.log(`[survey] go ${level}: ${r2.where()}`);
+      const ok = await dq.playing(level, ms);
+      console.log(`[survey] go ${level}: ${dq.where()}`);
       return ok;
     },
   };

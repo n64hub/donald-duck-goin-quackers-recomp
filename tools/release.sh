@@ -96,7 +96,7 @@ publish)
         [ -f "$f" ] || { echo "no $f: run tools/release.sh windows and linux first" >&2; exit 1; }
         [ "$(cat "$f.commit" 2> /dev/null)" = "$commit" ] || { echo "$f wasn't built from $commit" >&2; exit 1; }
     done
-    gh release create "$tag" "${files[@]}" --target "$commit" --title "Rayman 2: Recompiled $tag" --notes-file "$notes"
+    gh release create "$tag" "${files[@]}" --target "$commit" --title "Donald Duck: Goin' Quackers Recompiled $tag" --notes-file "$notes"
     ;;
 *)
     echo "usage: tools/release.sh windows|linux|publish" >&2

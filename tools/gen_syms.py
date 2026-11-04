@@ -1,4 +1,4 @@
-"""Writes syms/ddgq.us.syms.toml, N64Recomp's symbols for Rayman 2: The Great Escape (USA), from the ROM alone.
+"""Writes syms/ddgq.us.syms.toml, N64Recomp's symbols for Donald Duck: Goin' Quackers (USA), from the ROM alone.
 
 There is no decompilation of this game and no symbol map, so every function is found in the ROM's code:
 

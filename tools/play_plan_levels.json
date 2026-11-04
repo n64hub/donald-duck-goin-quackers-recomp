@@ -2,7 +2,7 @@
  "page": "GoinQuackersRecompiled.html",
  "header": [
   "The page's plan for N64Recomp-browser's tools/play_page.mjs, a release's check of about 10 minutes, longer than a",
-  "regular play because it visits every level: the extended plan's start to the intro story, then each level of the game's",
+  "regular play because it visits every level: the regular plan's start to the world map, then each level of the game's",
   "table of levels (tools/shader_plan.json's sections) in turn by tools/survey.js's go(), as the game's own exits change",
   "level, with a shot of each 3 s in and a short walk and jump. A level the game doesn't play within 45 s is logged",
   "([survey] not playing) and the plan goes on, so one play shows every level that fails.",
@@ -55,13 +55,13 @@
    "Enter",
    13,
    150,
-   2000,
-   "r2.level() == \"menu\"",
-   40000
+   2500,
+   "dq.level() == \"menu\"",
+   90000
   ],
   [
    "clock",
-   "r2.clock()",
+   "dq.clock()",
    60
   ],
   [
@@ -81,22 +81,26 @@
    " ",
    32,
    150,
-   2500,
-   "r2.level() == \"jail_10\"",
-   60000
+   1500,
+   "dq.level() == \"mapmonde\" && dq.mode() == 9",
+   120000
   ],
   [
    "need",
-   "r2.playing(\"jail_10\")"
+   "dq.playing(\"mapmonde\")"
   ],
   [
    "clock",
-   "r2.clock()",
+   "dq.clock()",
    60
   ],
   [
    "wait",
-   10000
+   4000
+  ],
+  [
+   "shot",
+   "mapmonde.png"
   ],
   [
    "clock"
@@ -105,19 +109,15 @@
  "play": [
   [
    "eval",
-   "(() => { try { const s = FS.stat('/home/web_user/.config/GoinQuackersRecompiled/saves/controllerpak_1.mpk'); console.log('[plan] pak ' + s.size + ' bytes, written ' + new Date(s.mtime).toISOString()); } catch (e) { console.log('[plan] no pak'); } return true; })()"
+   "dq.go(\"trail\", 45000)"
   ],
   [
-   "eval",
-   "r2.go(\"jail_20\", 45000)"
-  ],
-  [
    "wait",
    3000
   ],
   [
    "shot",
-   "jail_20.png"
+   "trail.png"
   ],
   [
    "hold",
@@ -139,37 +139,11 @@
   ],
   [
    "eval",
-   "r2.go(\"learn_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "learn_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
-   "wait",
-   1000
-  ],
-  [
    "eval",
-   "r2.go(\"learn_30\", 45000)"
+   "dq.go(\"thehike\", 45000)"
   ],
   [
    "wait",
@@ -177,7 +151,7 @@
   ],
   [
    "shot",
-   "learn_30.png"
+   "thehike.png"
   ],
   [
    "hold",
@@ -199,37 +173,11 @@
   ],
   [
    "eval",
-   "r2.go(\"learn_31\", 45000)"
-  ],
-  [
-   "wait",
-   3000
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
-   "shot",
-   "learn_31.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
    "eval",
-   "r2.go(\"bast_20\", 45000)"
+   "dq.go(\"brush\", 45000)"
   ],
   [
    "wait",
@@ -237,7 +185,7 @@
   ],
   [
    "shot",
-   "bast_20.png"
+   "brush.png"
   ],
   [
    "hold",
@@ -259,37 +207,11 @@
   ],
   [
    "eval",
-   "r2.go(\"bast_22\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "bast_22.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"learn_60\", 45000)"
+   "dq.go(\"forest_chase\", 45000)"
   ],
   [
    "wait",
@@ -297,7 +219,7 @@
   ],
   [
    "shot",
-   "learn_60.png"
+   "forest_chase.png"
   ],
   [
    "hold",
@@ -319,37 +241,11 @@
   ],
   [
    "eval",
-   "r2.go(\"ski_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "ski_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"vulca_10\", 45000)"
+   "dq.go(\"forest_1_b\", 45000)"
   ],
   [
    "wait",
@@ -357,7 +253,7 @@
   ],
   [
    "shot",
-   "vulca_10.png"
+   "forest_1_b.png"
   ],
   [
    "hold",
@@ -379,37 +275,11 @@
   ],
   [
    "eval",
-   "r2.go(\"vulca_20\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "vulca_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"ski_60\", 45000)"
+   "dq.go(\"forest_boss\", 45000)"
   ],
   [
    "wait",
@@ -417,7 +287,7 @@
   ],
   [
    "shot",
-   "ski_60.png"
+   "forest_boss.png"
   ],
   [
    "hold",
@@ -439,37 +309,11 @@
   ],
   [
    "eval",
-   "r2.go(\"batam_10\", 45000)"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "batam_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
    "eval",
-   "r2.go(\"chase_10\", 45000)"
+   "dq.go(\"sidewalk\", 45000)"
   ],
   [
    "wait",
@@ -477,7 +321,7 @@
   ],
   [
    "shot",
-   "chase_10.png"
+   "sidewalk.png"
   ],
   [
    "hold",
@@ -499,37 +343,11 @@
   ],
   [
    "eval",
-   "r2.go(\"ly_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "ly_10.png"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
    "eval",
-   "r2.go(\"chase_22\", 45000)"
+   "dq.go(\"roof\", 45000)"
   ],
   [
    "wait",
@@ -537,7 +355,7 @@
   ],
   [
    "shot",
-   "chase_22.png"
+   "roof.png"
   ],
   [
    "hold",
@@ -559,37 +377,11 @@
   ],
   [
    "eval",
-   "r2.go(\"rodeo_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "rodeo_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
    "eval",
-   "r2.go(\"rodeo_40\", 45000)"
+   "dq.go(\"edge\", 45000)"
   ],
   [
    "wait",
@@ -597,7 +389,7 @@
   ],
   [
    "shot",
-   "rodeo_40.png"
+   "edge.png"
   ],
   [
    "hold",
@@ -616,10 +408,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"rodeo_60\", 45000)"
+   "dq.go(\"city_chase\", 45000)"
   ],
   [
    "wait",
@@ -627,7 +423,7 @@
   ],
   [
    "shot",
-   "rodeo_60.png"
+   "city_chase.png"
   ],
   [
    "hold",
@@ -646,10 +442,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"nego_10\", 45000)"
+   "dq.go(\"city_2_b\", 45000)"
   ],
   [
    "wait",
@@ -657,7 +457,7 @@
   ],
   [
    "shot",
-   "nego_10.png"
+   "city_2_b.png"
   ],
   [
    "hold",
@@ -676,10 +476,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"water_10\", 45000)"
+   "dq.go(\"city_boss\", 45000)"
   ],
   [
    "wait",
@@ -687,7 +491,7 @@
   ],
   [
    "shot",
-   "water_10.png"
+   "city_boss.png"
   ],
   [
    "hold",
@@ -709,15 +513,19 @@
   ],
   [
    "eval",
-   "r2.go(\"water_20\", 45000)"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
+   "eval",
+   "dq.go(\"haunted_3_1\", 45000)"
+  ],
+  [
    "wait",
    3000
   ],
   [
    "shot",
-   "water_20.png"
+   "haunted_3_1.png"
   ],
   [
    "hold",
@@ -736,10 +544,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"glob_30\", 45000)"
+   "dq.go(\"haunted_3_2\", 45000)"
   ],
   [
    "wait",
@@ -747,7 +559,7 @@
   ],
   [
    "shot",
-   "glob_30.png"
+   "haunted_3_2.png"
   ],
   [
    "hold",
@@ -766,10 +578,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"glob_10\", 45000)"
+   "dq.go(\"haunted_3_3\", 45000)"
   ],
   [
    "wait",
@@ -777,7 +593,7 @@
   ],
   [
    "shot",
-   "glob_10.png"
+   "haunted_3_3.png"
   ],
   [
    "hold",
@@ -796,10 +612,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"glob_20\", 45000)"
+   "dq.go(\"haunted_3_4\", 45000)"
   ],
   [
    "wait",
@@ -807,7 +627,7 @@
   ],
   [
    "shot",
-   "glob_20.png"
+   "haunted_3_4.png"
   ],
   [
    "hold",
@@ -829,15 +649,19 @@
   ],
   [
    "eval",
-   "r2.go(\"whale_00\", 45000)"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
+   "eval",
+   "dq.go(\"haunted_3_b\", 45000)"
+  ],
+  [
    "wait",
    3000
   ],
   [
    "shot",
-   "whale_00.png"
+   "haunted_3_b.png"
   ],
   [
    "hold",
@@ -856,10 +680,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"whale_05\", 45000)"
+   "dq.go(\"haunted_boss\", 45000)"
   ],
   [
    "wait",
@@ -867,7 +695,7 @@
   ],
   [
    "shot",
-   "whale_05.png"
+   "haunted_boss.png"
   ],
   [
    "hold",
@@ -886,10 +714,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"whale_10\", 45000)"
+   "dq.go(\"inca_4_1\", 45000)"
   ],
   [
    "wait",
@@ -897,7 +729,7 @@
   ],
   [
    "shot",
-   "whale_10.png"
+   "inca_4_1.png"
   ],
   [
    "hold",
@@ -916,10 +748,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"plum_00\", 45000)"
+   "dq.go(\"inca_4_2\", 45000)"
   ],
   [
    "wait",
@@ -927,7 +763,7 @@
   ],
   [
    "shot",
-   "plum_00.png"
+   "inca_4_2.png"
   ],
   [
    "hold",
@@ -949,15 +785,19 @@
   ],
   [
    "eval",
-   "r2.go(\"plum_20\", 45000)"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
+   "eval",
+   "dq.go(\"inca_4_3\", 45000)"
+  ],
+  [
    "wait",
    3000
   ],
   [
    "shot",
-   "plum_20.png"
+   "inca_4_3.png"
   ],
   [
    "hold",
@@ -976,10 +816,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"plum_10\", 45000)"
+   "dq.go(\"inca_4_4\", 45000)"
   ],
   [
    "wait",
@@ -987,7 +831,7 @@
   ],
   [
    "shot",
-   "plum_10.png"
+   "inca_4_4.png"
   ],
   [
    "hold",
@@ -1006,10 +850,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"bast_09\", 45000)"
+   "dq.go(\"inca_4_b\", 45000)"
   ],
   [
    "wait",
@@ -1017,7 +865,7 @@
   ],
   [
    "shot",
-   "bast_09.png"
+   "inca_4_b.png"
   ],
   [
    "hold",
@@ -1036,10 +884,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"bast_10\", 45000)"
+   "dq.go(\"inca_boss\", 45000)"
   ],
   [
    "wait",
@@ -1047,7 +899,7 @@
   ],
   [
    "shot",
-   "bast_10.png"
+   "inca_boss.png"
   ],
   [
    "hold",
@@ -1069,15 +921,19 @@
   ],
   [
    "eval",
-   "r2.go(\"cask_10\", 45000)"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
+   "eval",
+   "dq.go(\"endmap\", 45000)"
+  ],
+  [
    "wait",
    3000
   ],
   [
    "shot",
-   "cask_10.png"
+   "endmap.png"
   ],
   [
    "hold",
@@ -1096,10 +952,14 @@
   [
    "wait",
    1000
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"cask_30\", 45000)"
+   "dq.go(\"credits\", 45000)"
   ],
   [
    "wait",
@@ -1107,7 +967,7 @@
   ],
   [
    "shot",
-   "cask_30.png"
+   "credits.png"
   ],
   [
    "hold",
@@ -1129,877 +989,11 @@
   ],
   [
    "eval",
-   "r2.go(\"nave_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "nave_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"nave_15\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "nave_15.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"nave_20\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "nave_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"seat_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "seat_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"seat_11\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "seat_11.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"earth_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "earth_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"earth_20\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "earth_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"ly_20\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "ly_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"earth_30\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "earth_30.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"helic_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "helic_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"helic_20\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "helic_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"helic_30\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "helic_30.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"morb_00\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "morb_00.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"morb_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "morb_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"morb_20\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "morb_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"learn_40\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "learn_40.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"ile_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "ile_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"mine_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "mine_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"batam_20\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "batam_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"astro_00\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "astro_00.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"astro_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "astro_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"rhop_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "rhop_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"end_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "end_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"staff_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "staff_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"poloc_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "poloc_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"poloc_20\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "poloc_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"poloc_30\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "poloc_30.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"poloc_40\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "poloc_40.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
-  ],
-  [
-   "eval",
-   "r2.go(\"hpoloc_10\", 45000)"
-  ],
-  [
-   "wait",
-   3000
-  ],
-  [
-   "shot",
-   "hpoloc_10.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   1500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   300
-  ],
-  [
-   "wait",
-   1000
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "eval",
-   "r2.go(\"dpoloc_20\", 45000)"
+   "dq.go(\"gameover\", 45000)"
   ],
   [
    "wait",
@@ -2007,7 +1001,7 @@
   ],
   [
    "shot",
-   "dpoloc_20.png"
+   "gameover.png"
   ],
   [
    "hold",
@@ -2029,7 +1023,7 @@
   ],
   [
    "eval",
-   "(() => { try { const s = FS.stat('/home/web_user/.config/GoinQuackersRecompiled/saves/controllerpak_1.mpk'); console.log('[plan] pak ' + s.size + ' bytes, written ' + new Date(s.mtime).toISOString()); } catch (e) { console.log('[plan] no pak'); } return true; })()"
+   "console.log(\"[plan] \" + dq.where()); true"
   ]
  ]
 }

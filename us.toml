@@ -17,8 +17,8 @@ use_absolute_symbols = true
 # Spins. The runtime runs one game thread at a time and switches only when the running one calls into it, where a
 # console's interrupts preempt any thread. The game waits for its controller thread (func_80084030, woken by the SI's
 # messages) to finish a Controller Pak request by spinning on that thread's state byte, 0x800C0B28, until it is 0
-# (func_80084024 reads it): each pass yields, or the controller thread never runs and the game freezes on the screen
-# after it reads the pak (the "Expansion Pak detected!" screen at boot).
+# (func_80084024 reads it): each pass yields, or the controller thread never runs and the game freezes at boot, on the
+# screen after it reads the pak.
 [[patches.hook]]
 func = "func_800843FC"
 before_vram = 0x80084414
@@ -69,7 +69,7 @@ before_vram = 0x800AA59C
 text = "if (MEM_W(0, (gpr)(int32_t)0x800DBE1C) >= MEM_W(0, (gpr)(int32_t)0x800DBE20)) { ctx->r2 = 1; return; }"
 
 # A menu's backdrop clears black. Each frame func_80082D04 clears the colour image with a fill of the viewport's colour
-# (+0x7C, the level's fog: teal in the Woods of Light), or of black where 0x800C3D65 is set (the Controller Pak's
+# (+0x7C, the level's fog), or of black where 0x800C3D65 is set (the Controller Pak's
 # screens). While a menu shows its backdrop (the pause menu and its pages), a script sets 0x800C0640, and
 # func_8008E718 draws the menu's opaque gradient (func_800931E8) over the whole 4:3 in place of the level's sky, so on
 # a console the fill never shows. RT64 widens a fill of the whole screen to the window's edges but keeps the gradient
@@ -147,13 +147,13 @@ func = "func_800BB0F0"
 before_vram = 0x800BB2A4
 text = "{ void dq_hud_text_end(uint8_t*); dq_hud_text_end(rdram); }"
 
-# The scene transition's thread, func_80084030, blacks out a pass of the shown framebuffer (a0) at 0x80084134, its map
-# in a3, the pass's level in a1 and the loop's count in v1. src/game/widescreen.cpp does the pass for a wide picture
-# and leaves the loop nothing to do (none at Original).
+# The scene transition's start, func_800F7378, loads the transition's map with func_800277DC at 0x800F7478 into the
+# framebuffer at v0 plus a0 (added in the call's delay slot). src/game/transition.cpp waits there until that framebuffer
+# isn't the one shown.
 [[patches.hook]]
-func = "func_80084030"
-before_vram = 0x80084134
-text = "{ gpr dq_wipe_pass(uint8_t*, gpr, gpr, gpr, gpr); ctx->r3 = dq_wipe_pass(rdram, ctx->r7, ctx->r4, ctx->r5, ctx->r3); }"
+func = "func_800F7378"
+before_vram = 0x800F7478
+text = "{ void dq_wait_framebuffer_hidden(uint8_t*, gpr); dq_wait_framebuffer_hidden(rdram, ctx->r2 + ctx->r4); }"
 
 # A menu's backdrop gradient: func_800931E8 makes each vertex's colour from its place (its x read into v0 at 0x80093348,
 # the vertex in t0) and then writes the display list that draws them, at 0x80093478. src/game/widescreen.cpp spreads

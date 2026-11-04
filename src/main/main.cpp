@@ -62,7 +62,7 @@
 #include "window_icon_bmp.h"
 #endif
 
-const std::string version_string = "0.1.3";
+const std::string version_string = "0.1.0";
 
 template<typename... Ts>
 void exit_error(const char* str, Ts ...args) {
@@ -93,7 +93,7 @@ ultramodern::gfx_callbacks_t::gfx_data_t create_gfx() {
     return {};
 }
 
-// Rayman 2 is one player's: port 1 has a controller, any pad or the keyboard, with a pak in it. The game reads the
+// The game is one player's: port 1 has a controller, any pad or the keyboard, with a pak in it. The game reads the
 // controllers' status for a pak before it opens its Controller Pak save (src/game/controller_pak.cpp), and with none
 // it waits on the save slots' screen for good. ultramodern reports a pak for any Pak but None, and RumblePak is the
 // only other it has.

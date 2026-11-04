@@ -1,6 +1,6 @@
 // File-backed Controller Pak: the libultra osPfs* API over a raw pak image per controller port.
 //
-// Rayman 2 saves only to the Controller Pak, and N64ModernRuntime's osPfs* (librecomp/src/pak.cpp) all report
+// The game saves only to the Controller Pak, and N64ModernRuntime's osPfs* (librecomp/src/pak.cpp) all report
 // PFS_ERR_NOPACK, so the game would say at boot that it will not be saved. This file defines every function pak.cpp
 // does, so the linker uses these and never pulls that object in. It is rush-2049-recomp's src/controller_pak.cpp
 // without that game's own parts (its pak of 62 banks, its ghosts and Rumble Pak).
