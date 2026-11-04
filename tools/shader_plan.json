@@ -9,15 +9,13 @@
   "",
   "Recorded by code, not by playing: node lib/N64Recomp-browser/tools/record_shaders.mjs tools/shader_plan.json build/web",
   "roms/ddgq.us.z64 src/rt64_shaders.txt (its header says how), on tools/build_web.sh's page. Section 0 is the",
-  "launcher, the boot (the logos, the attract demo, the title), the main menu and a new game's slot and name, reached",
-  "with Start and A as a player does, and the intro story's first 10 s. Then the intro story (jail_10) for a minute, and",
-  "a section a level of the game's table of levels, each reached from the intro story by tools/survey.js's go(), as the",
-  "game's own exits change level, and walked about for 15 s of the game's time. The plan's last section, pause, goes",
-  "into section 0: the pause menu (its Load and Options too), which comes up in any level and asks for its shaders a few",
-  "at once, fewer than a section's build waits for, paused in learn_10, and the world map's (mapmonde) prompt to save",
-  "the game and its answer. Not recorded: the levels past their starts, the bosses' fights and the game's other",
-  "cutscenes. Flags follow settings (filtering, HDR, MSAA, upscaling), so a change to one of those defaults means",
-  "recording again."
+  "launcher, the boot (the logos and the title), the main menu, a new game's newscast and the world map (mapmonde),",
+  "reached with Start and A as a player does. Then a section a level of the game's table of levels, each reached from",
+  "the world map by tools/survey.js's go(), as the game's own exits change level, and walked about for 15 s of the",
+  "game's time. The plan's last section, pause, goes into section 0: the pause menu, which comes up in any level and",
+  "asks for its shaders a few at once, fewer than a section's build waits for, paused in trail. Not recorded: the",
+  "levels past their starts, the bosses' fights and the game's other cutscenes. Flags follow settings (filtering, HDR,",
+  "MSAA, upscaling), so a change to one of those defaults means recording again."
  ],
  "load": [
   [
@@ -60,22 +58,14 @@
    "survey.js"
   ],
   [
-   "eval",
-   "r2.playing(\"ly_20\", 60000)"
-  ],
-  [
-   "wait",
-   20000
-  ],
-  [
    "pressUntil",
    "Enter",
    "Enter",
    13,
    150,
-   2000,
-   "r2.level() == \"menu\"",
-   40000
+   2500,
+   "dq.level() == \"menu\"",
+   90000
   ],
   [
    "wait",
@@ -87,22 +77,18 @@
    " ",
    32,
    150,
-   2500,
-   "r2.level() == \"jail_10\"",
-   60000
-  ],
-  [
-   "eval",
-   "r2.playing(\"jail_10\")"
+   1500,
+   "dq.level() == \"mapmonde\" && dq.mode() == 9",
+   120000
   ],
   [
    "clock",
-   "r2.clock()",
+   "dq.clock()",
    60
   ],
   [
    "wait",
-   10000
+   5000
   ],
   [
    "clock"
@@ -110,32 +96,15 @@
  ],
  "sections": [
   {
-   "name": "jail_10",
-   "steps": [
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     60000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "jail_20",
+   "name": "trail",
    "steps": [
     [
      "eval",
-     "r2.go(\"jail_20\", 60000)"
+     "dq.go(\"trail\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -194,15 +163,15 @@
    ]
   },
   {
-   "name": "learn_10",
+   "name": "thehike",
    "steps": [
     [
      "eval",
-     "r2.go(\"learn_10\", 60000)"
+     "dq.go(\"thehike\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -261,15 +230,15 @@
    ]
   },
   {
-   "name": "learn_30",
+   "name": "brush",
    "steps": [
     [
      "eval",
-     "r2.go(\"learn_30\", 60000)"
+     "dq.go(\"brush\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -328,15 +297,15 @@
    ]
   },
   {
-   "name": "learn_31",
+   "name": "forest_chase",
    "steps": [
     [
      "eval",
-     "r2.go(\"learn_31\", 60000)"
+     "dq.go(\"forest_chase\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -395,15 +364,15 @@
    ]
   },
   {
-   "name": "bast_20",
+   "name": "forest_1_b",
    "steps": [
     [
      "eval",
-     "r2.go(\"bast_20\", 60000)"
+     "dq.go(\"forest_1_b\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -462,15 +431,15 @@
    ]
   },
   {
-   "name": "bast_22",
+   "name": "forest_boss",
    "steps": [
     [
      "eval",
-     "r2.go(\"bast_22\", 60000)"
+     "dq.go(\"forest_boss\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -529,15 +498,15 @@
    ]
   },
   {
-   "name": "learn_60",
+   "name": "sidewalk",
    "steps": [
     [
      "eval",
-     "r2.go(\"learn_60\", 60000)"
+     "dq.go(\"sidewalk\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -596,15 +565,15 @@
    ]
   },
   {
-   "name": "ski_10",
+   "name": "roof",
    "steps": [
     [
      "eval",
-     "r2.go(\"ski_10\", 60000)"
+     "dq.go(\"roof\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -663,15 +632,15 @@
    ]
   },
   {
-   "name": "vulca_10",
+   "name": "edge",
    "steps": [
     [
      "eval",
-     "r2.go(\"vulca_10\", 60000)"
+     "dq.go(\"edge\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -730,15 +699,15 @@
    ]
   },
   {
-   "name": "vulca_20",
+   "name": "city_chase",
    "steps": [
     [
      "eval",
-     "r2.go(\"vulca_20\", 60000)"
+     "dq.go(\"city_chase\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -797,15 +766,15 @@
    ]
   },
   {
-   "name": "ski_60",
+   "name": "city_2_b",
    "steps": [
     [
      "eval",
-     "r2.go(\"ski_60\", 60000)"
+     "dq.go(\"city_2_b\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -864,15 +833,15 @@
    ]
   },
   {
-   "name": "batam_10",
+   "name": "city_boss",
    "steps": [
     [
      "eval",
-     "r2.go(\"batam_10\", 60000)"
+     "dq.go(\"city_boss\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -931,15 +900,15 @@
    ]
   },
   {
-   "name": "chase_10",
+   "name": "haunted_3_1",
    "steps": [
     [
      "eval",
-     "r2.go(\"chase_10\", 60000)"
+     "dq.go(\"haunted_3_1\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -998,15 +967,15 @@
    ]
   },
   {
-   "name": "ly_10",
+   "name": "haunted_3_2",
    "steps": [
     [
      "eval",
-     "r2.go(\"ly_10\", 60000)"
+     "dq.go(\"haunted_3_2\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1065,15 +1034,15 @@
    ]
   },
   {
-   "name": "chase_22",
+   "name": "haunted_3_3",
    "steps": [
     [
      "eval",
-     "r2.go(\"chase_22\", 60000)"
+     "dq.go(\"haunted_3_3\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1132,15 +1101,15 @@
    ]
   },
   {
-   "name": "rodeo_10",
+   "name": "haunted_3_4",
    "steps": [
     [
      "eval",
-     "r2.go(\"rodeo_10\", 60000)"
+     "dq.go(\"haunted_3_4\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1199,15 +1168,15 @@
    ]
   },
   {
-   "name": "rodeo_40",
+   "name": "haunted_3_b",
    "steps": [
     [
      "eval",
-     "r2.go(\"rodeo_40\", 60000)"
+     "dq.go(\"haunted_3_b\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1266,15 +1235,15 @@
    ]
   },
   {
-   "name": "rodeo_60",
+   "name": "haunted_boss",
    "steps": [
     [
      "eval",
-     "r2.go(\"rodeo_60\", 60000)"
+     "dq.go(\"haunted_boss\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1333,15 +1302,15 @@
    ]
   },
   {
-   "name": "nego_10",
+   "name": "inca_4_1",
    "steps": [
     [
      "eval",
-     "r2.go(\"nego_10\", 60000)"
+     "dq.go(\"inca_4_1\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1400,15 +1369,15 @@
    ]
   },
   {
-   "name": "water_10",
+   "name": "inca_4_2",
    "steps": [
     [
      "eval",
-     "r2.go(\"water_10\", 60000)"
+     "dq.go(\"inca_4_2\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1467,15 +1436,15 @@
    ]
   },
   {
-   "name": "water_20",
+   "name": "inca_4_3",
    "steps": [
     [
      "eval",
-     "r2.go(\"water_20\", 60000)"
+     "dq.go(\"inca_4_3\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1534,15 +1503,15 @@
    ]
   },
   {
-   "name": "glob_30",
+   "name": "inca_4_4",
    "steps": [
     [
      "eval",
-     "r2.go(\"glob_30\", 60000)"
+     "dq.go(\"inca_4_4\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1601,15 +1570,15 @@
    ]
   },
   {
-   "name": "glob_10",
+   "name": "inca_4_b",
    "steps": [
     [
      "eval",
-     "r2.go(\"glob_10\", 60000)"
+     "dq.go(\"inca_4_b\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1668,15 +1637,15 @@
    ]
   },
   {
-   "name": "glob_20",
+   "name": "inca_boss",
    "steps": [
     [
      "eval",
-     "r2.go(\"glob_20\", 60000)"
+     "dq.go(\"inca_boss\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1735,15 +1704,15 @@
    ]
   },
   {
-   "name": "whale_00",
+   "name": "endmap",
    "steps": [
     [
      "eval",
-     "r2.go(\"whale_00\", 60000)"
+     "dq.go(\"endmap\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1802,15 +1771,15 @@
    ]
   },
   {
-   "name": "whale_05",
+   "name": "credits",
    "steps": [
     [
      "eval",
-     "r2.go(\"whale_05\", 60000)"
+     "dq.go(\"credits\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -1869,2494 +1838,15 @@
    ]
   },
   {
-   "name": "whale_10",
+   "name": "gameover",
    "steps": [
     [
      "eval",
-     "r2.go(\"whale_10\", 60000)"
+     "dq.go(\"gameover\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "plum_00",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"plum_00\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "plum_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"plum_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "plum_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"plum_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "bast_09",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"bast_09\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "bast_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"bast_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "cask_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"cask_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "cask_30",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"cask_30\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "nave_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"nave_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "nave_15",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"nave_15\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "nave_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"nave_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "seat_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"seat_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "seat_11",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"seat_11\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "earth_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"earth_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "earth_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"earth_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "ly_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"ly_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "earth_30",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"earth_30\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "helic_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"helic_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "helic_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"helic_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "helic_30",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"helic_30\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "morb_00",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"morb_00\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "morb_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"morb_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "morb_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"morb_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "learn_40",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"learn_40\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "ile_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"ile_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "mine_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"mine_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "batam_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"batam_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "astro_00",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"astro_00\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "astro_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"astro_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "rhop_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"rhop_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "end_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"end_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "staff_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"staff_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "poloc_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"poloc_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "poloc_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"poloc_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "poloc_30",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"poloc_30\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "poloc_40",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"poloc_40\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "hpoloc_10",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"hpoloc_10\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
-     60
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     300
-    ],
-    [
-     "hold",
-     "KeyD",
-     "d",
-     68,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2500
-    ],
-    [
-     "hold",
-     "KeyA",
-     "a",
-     65,
-     1200
-    ],
-    [
-     "hold",
-     "KeyW",
-     "w",
-     87,
-     2000
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "clock"
-    ]
-   ]
-  },
-  {
-   "name": "dpoloc_20",
-   "steps": [
-    [
-     "eval",
-     "r2.go(\"dpoloc_20\", 60000)"
-    ],
-    [
-     "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -4424,11 +1914,11 @@
     ],
     [
      "eval",
-     "r2.go(\"learn_10\", 60000)"
+     "dq.go(\"trail\", 60000)"
     ],
     [
      "clock",
-     "r2.clock()",
+     "dq.clock()",
      60
     ],
     [
@@ -4470,28 +1960,6 @@
     ],
     [
      "hold",
-     "Space",
-     " ",
-     32,
-     150
-    ],
-    [
-     "wait",
-     2500
-    ],
-    [
-     "hold",
-     "ShiftLeft",
-     "Shift",
-     16,
-     150
-    ],
-    [
-     "wait",
-     1500
-    ],
-    [
-     "hold",
      "KeyS",
      "s",
      83,
@@ -4503,20 +1971,9 @@
     ],
     [
      "hold",
-     "Space",
-     " ",
-     32,
-     150
-    ],
-    [
-     "wait",
-     2500
-    ],
-    [
-     "hold",
-     "KeyS",
-     "s",
-     83,
+     "KeyW",
+     "w",
+     87,
      200
     ],
     [
@@ -4525,36 +1982,14 @@
     ],
     [
      "hold",
-     "Space",
-     " ",
-     32,
-     150
+     "KeyW",
+     "w",
+     87,
+     200
     ],
     [
      "wait",
-     2000
-    ],
-    [
-     "hold",
-     "ShiftLeft",
-     "Shift",
-     16,
-     150
-    ],
-    [
-     "wait",
-     1500
-    ],
-    [
-     "hold",
-     "ShiftLeft",
-     "Shift",
-     16,
-     150
-    ],
-    [
-     "wait",
-     1500
+     800
     ],
     [
      "keep",
@@ -4573,44 +2008,6 @@
     ],
     [
      "clock"
-    ],
-    [
-     "eval",
-     "r2.go(\"mapmonde\", 60000)"
-    ],
-    [
-     "keep",
-     true
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     150
-    ],
-    [
-     "wait",
-     3000
-    ],
-    [
-     "keep",
-     false
-    ],
-    [
-     "hold",
-     "Space",
-     " ",
-     32,
-     150
-    ],
-    [
-     "wait",
-     2000
     ]
    ]
   }

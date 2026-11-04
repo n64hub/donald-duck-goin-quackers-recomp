@@ -1,15 +1,14 @@
 {
  "page": "GoinQuackersRecompiled.html",
  "header": [
-  "The page's plan for N64Recomp-browser's tools/play_page.mjs, its extended play of about 5 minutes: the launcher, Load",
-  "ROM on a new profile once the shader list Chrome builds behind it is done (Firefox builds none there and says so),",
-  "Start Game, the logos and the attract demo, then Start (Enter) to the main menu and A (Space) through New Game, a slot",
-  "and a name to the intro story, as a player does: the menus go by the level the game is in, tools/survey.js's level().",
-  "The intro story plays 25 s, and then the plan changes level as the game's own exits do (survey.js's go(), each a need",
-  "that fails the run unless the game plays that level): the prison ship (jail_20), A through its first lines, and the",
-  "Woods of Light (learn_10), walked and jumped about for 40 s. Then five more levels of the game's table of levels,",
-  "learn_30, ski_10, chase_10, water_10, glob_10, 25 s each, the same way. Its waits and holds are on the game's own",
-  "clock (survey.js's clock(), 60 a second of play).",
+  "The page's plan for N64Recomp-browser's tools/play_page.mjs, its extended play of about 5 minutes: the launcher, Load ROM",
+  "on a new profile once the shader list Chrome builds behind it is done (Firefox builds none there and says so), Start",
+  "Game, the logos and the title, then Start (Enter) to the main menu and A (Space) through New Game and the newscast",
+  "to the world map (mapmonde), as a player does: the menus go by the level the game is in, tools/survey.js's level().",
+  "Then the plan changes level as the game's own exits do (survey.js's go(), each a need that fails the run unless the",
+  "game plays that level): the regular plan's trail (40 s, with the pause menu), sidewalk (30 s) and haunted_3_1",
+  "(25 s), and then forest_chase, roof and city_chase for 20 s each and inca_4_1 for 25 s, the same way.",
+  "Its waits and holds are on the game's own clock (survey.js's clock(), 60 a second of play).",
   "The menu shot is 3 s into the menu on that clock too, which stands still while Firefox builds the shader list's boot",
   "section as the menu first draws, the game waiting: 3 s of the browser's time there can shoot that wait's black."
  ],
@@ -59,13 +58,13 @@
    "Enter",
    13,
    150,
-   2000,
-   "r2.level() == \"menu\"",
-   40000
+   2500,
+   "dq.level() == \"menu\"",
+   90000
   ],
   [
    "clock",
-   "r2.clock()",
+   "dq.clock()",
    60
   ],
   [
@@ -85,22 +84,26 @@
    " ",
    32,
    150,
-   2500,
-   "r2.level() == \"jail_10\"",
-   60000
+   1500,
+   "dq.level() == \"mapmonde\" && dq.mode() == 9",
+   120000
   ],
   [
    "need",
-   "r2.playing(\"jail_10\")"
+   "dq.playing(\"mapmonde\")"
   ],
   [
    "clock",
-   "r2.clock()",
+   "dq.clock()",
    60
   ],
   [
    "wait",
-   10000
+   4000
+  ],
+  [
+   "shot",
+   "mapmonde.png"
   ],
   [
    "clock"
@@ -108,106 +111,13 @@
  ],
  "play": [
   [
+   "need",
+   "dq.go(\"trail\", 60000)"
+  ],
+  [
    "clock",
-   "r2.clock()",
+   "dq.clock()",
    60
-  ],
-  [
-   "wait",
-   15000
-  ],
-  [
-   "shot",
-   "story.png"
-  ],
-  [
-   "need",
-   "r2.go(\"jail_20\", 60000)"
-  ],
-  [
-   "wait",
-   2000
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   150
-  ],
-  [
-   "wait",
-   2500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   150
-  ],
-  [
-   "wait",
-   2500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   150
-  ],
-  [
-   "wait",
-   2500
-  ],
-  [
-   "hold",
-   "Space",
-   " ",
-   32,
-   150
-  ],
-  [
-   "wait",
-   2500
-  ],
-  [
-   "shot",
-   "jail_20.png"
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   2000
-  ],
-  [
-   "hold",
-   "KeyA",
-   "a",
-   65,
-   1500
-  ],
-  [
-   "hold",
-   "KeyW",
-   "w",
-   87,
-   2000
-  ],
-  [
-   "wait",
-   2000
-  ],
-  [
-   "eval",
-   "console.log(\"[plan] \" + r2.where()); true"
-  ],
-  [
-   "need",
-   "r2.go(\"learn_10\", 60000)"
   ],
   [
    "wait",
@@ -242,12 +152,8 @@
    3000
   ],
   [
-   "wait",
-   1500
-  ],
-  [
    "shot",
-   "learn_10.png"
+   "trail.png"
   ],
   [
    "hold",
@@ -282,7 +188,14 @@
    "KeyD",
    "d",
    68,
-   2000
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
   ],
   [
    "hold",
@@ -290,10 +203,6 @@
    "w",
    87,
    3000
-  ],
-  [
-   "wait",
-   2000
   ],
   [
    "hold",
@@ -304,29 +213,129 @@
   ],
   [
    "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
    "KeyA",
    "a",
    65,
-   2000
+   1500
   ],
   [
    "hold",
    "KeyW",
    "w",
    87,
-   4000
-  ],
-  [
-   "wait",
    3000
   ],
   [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "clock"
+  ],
+  [
    "eval",
-   "console.log(\"[plan] \" + r2.where()); true"
+   "console.log(\"[plan] \" + dq.where()); true"
+  ],
+  [
+   "hold",
+   "Enter",
+   "Enter",
+   13,
+   150
+  ],
+  [
+   "wait",
+   2500
+  ],
+  [
+   "shot",
+   "pause.png"
+  ],
+  [
+   "hold",
+   "Enter",
+   "Enter",
+   13,
+   150
+  ],
+  [
+   "wait",
+   1500
   ],
   [
    "need",
-   "r2.go(\"learn_30\", 60000)"
+   "dq.go(\"sidewalk\", 60000)"
+  ],
+  [
+   "clock",
+   "dq.clock()",
+   60
   ],
   [
    "wait",
@@ -351,7 +360,7 @@
    "KeyD",
    "d",
    68,
-   1500
+   1000
   ],
   [
    "hold",
@@ -362,7 +371,7 @@
   ],
   [
    "shot",
-   "learn_30.png"
+   "sidewalk.png"
   ],
   [
    "hold",
@@ -379,16 +388,111 @@
    3000
   ],
   [
-   "wait",
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
    2000
   ],
   [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "clock"
+  ],
+  [
    "eval",
-   "console.log(\"[plan] \" + r2.where()); true"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "need",
-   "r2.go(\"ski_10\", 60000)"
+   "dq.go(\"haunted_3_1\", 60000)"
+  ],
+  [
+   "clock",
+   "dq.clock()",
+   60
   ],
   [
    "wait",
@@ -413,7 +517,7 @@
    "KeyD",
    "d",
    68,
-   1500
+   1000
   ],
   [
    "hold",
@@ -424,7 +528,7 @@
   ],
   [
    "shot",
-   "ski_10.png"
+   "haunted_3_1.png"
   ],
   [
    "hold",
@@ -441,16 +545,76 @@
    3000
   ],
   [
-   "wait",
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
    2000
   ],
   [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "clock"
+  ],
+  [
    "eval",
-   "console.log(\"[plan] \" + r2.where()); true"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "need",
-   "r2.go(\"chase_10\", 60000)"
+   "dq.go(\"forest_chase\", 60000)"
+  ],
+  [
+   "clock",
+   "dq.clock()",
+   60
   ],
   [
    "wait",
@@ -475,7 +639,7 @@
    "KeyD",
    "d",
    68,
-   1500
+   1000
   ],
   [
    "hold",
@@ -486,7 +650,7 @@
   ],
   [
    "shot",
-   "chase_10.png"
+   "forest_chase.png"
   ],
   [
    "hold",
@@ -503,16 +667,76 @@
    3000
   ],
   [
-   "wait",
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
    2000
   ],
   [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "clock"
+  ],
+  [
    "eval",
-   "console.log(\"[plan] \" + r2.where()); true"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "need",
-   "r2.go(\"water_10\", 60000)"
+   "dq.go(\"roof\", 60000)"
+  ],
+  [
+   "clock",
+   "dq.clock()",
+   60
   ],
   [
    "wait",
@@ -537,7 +761,7 @@
    "KeyD",
    "d",
    68,
-   1500
+   1000
   ],
   [
    "hold",
@@ -548,7 +772,7 @@
   ],
   [
    "shot",
-   "water_10.png"
+   "roof.png"
   ],
   [
    "hold",
@@ -565,16 +789,76 @@
    3000
   ],
   [
-   "wait",
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
    2000
   ],
   [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "clock"
+  ],
+  [
    "eval",
-   "console.log(\"[plan] \" + r2.where()); true"
+   "console.log(\"[plan] \" + dq.where()); true"
   ],
   [
    "need",
-   "r2.go(\"glob_10\", 60000)"
+   "dq.go(\"city_chase\", 60000)"
+  ],
+  [
+   "clock",
+   "dq.clock()",
+   60
   ],
   [
    "wait",
@@ -599,7 +883,7 @@
    "KeyD",
    "d",
    68,
-   1500
+   1000
   ],
   [
    "hold",
@@ -610,7 +894,7 @@
   ],
   [
    "shot",
-   "glob_10.png"
+   "city_chase.png"
   ],
   [
    "hold",
@@ -627,12 +911,189 @@
    3000
   ],
   [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "clock"
+  ],
+  [
+   "eval",
+   "console.log(\"[plan] \" + dq.where()); true"
+  ],
+  [
+   "need",
+   "dq.go(\"inca_4_1\", 60000)"
+  ],
+  [
+   "clock",
+   "dq.clock()",
+   60
+  ],
+  [
    "wait",
    2000
   ],
   [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "shot",
+   "inca_4_1.png"
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "hold",
+   "KeyA",
+   "a",
+   65,
+   1500
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   3000
+  ],
+  [
+   "hold",
+   "Space",
+   " ",
+   32,
+   300
+  ],
+  [
+   "hold",
+   "KeyW",
+   "w",
+   87,
+   2000
+  ],
+  [
+   "hold",
+   "KeyD",
+   "d",
+   68,
+   1000
+  ],
+  [
+   "clock"
+  ],
+  [
    "eval",
-   "console.log(\"[plan] \" + r2.where()); true"
+   "console.log(\"[plan] \" + dq.where()); true"
   ]
  ]
 }
