@@ -13,9 +13,13 @@ decompilation of this game: its functions are found in the ROM's code by `tools/
 The repo holds no ROM, no asset from the game and no data extracted from it: you supply your own ROM, and nothing in
 git or CI is made from one except the function names, addresses and sizes in `syms/`.
 
-**Status:** in progress, not released. The game runs on the engine of Rayman 2's N64 version, so this repo starts
-from [Rayman 2: Recompiled](https://github.com/n64hub/rayman-2-recomp) and its hooks are found again at this game's
-addresses.
+**Status:** released for Windows and Linux (`releases/`). The desktop build boots through the logos and the title,
+plays a new game through the newscast to the world map, and loads and draws every level of the game's table, the
+pause menu with them, with sound, Controller Pak saves, and keyboard and gamepad input. The game hasn't been played
+from start to end yet. It runs on the engine of Rayman 2's N64 version, so this repo starts from
+[Rayman 2: Recompiled](https://github.com/n64hub/rayman-2-recomp) and its hooks are found again at this game's
+addresses. The same game plays in a browser through WebGPU, at
+[n64hub.com/goin-quackers](https://n64hub.com/goin-quackers/) (`docs/web.md`).
 
 ## The ROM
 
