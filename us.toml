@@ -68,6 +68,21 @@ func = "func_800AA59C"
 before_vram = 0x800AA59C
 text = "if (MEM_W(0, (gpr)(int32_t)0x800DBE1C) >= MEM_W(0, (gpr)(int32_t)0x800DBE20)) { ctx->r2 = 1; return; }"
 
+# The music's event queue. libultra's sequence player (alSeqpNew) keeps a fixed pool of events, and among them one that
+# its voice handler (__seqpVoiceHandler) posts again, an audio frame (+0x5C) later, each time it comes: type 9, the
+# player's wake-up, which runs what the game posted since (alSeqpSendMidi's and n_alSeqpSetVol's events, each 0 us
+# away; none of them is type 9). alEvtqPostEvent drops an event when the pool has none left. While the audio is held
+# back (above) the game goes on sending its music's MIDI messages each retrace, and on lavapipe the title's first attract
+# demo held it back long enough for 446 to find the pool empty and the wake-up's repost after them, so the handler's
+# loop over events 0 us away never ended: alEvtqNextEvent on an empty queue gives one 0 us away. The program froze on the
+# demo's first frame, the audio thread spinning. So an event other than the wake-up that would take the pool's last
+# one is dropped, which keeps it for the wake-up: the dropped ones are what a console, never held back that long, would
+# have played over those seconds.
+[[patches.hook]]
+func = "alEvtqPostEvent"
+before_vram = 0x8000F984
+text = "if (MEM_H(0, ctx->r5) != 9) { gpr item = MEM_W(0, ctx->r4); if (item == 0 || MEM_W(0, item) == 0) return; }"
+
 # A menu's backdrop clears black. Each frame func_80082D04 clears the colour image with a fill of the viewport's colour
 # (+0x7C, the level's fog), or of black where 0x800C3D65 is set (the Controller Pak's
 # screens). While a menu shows its backdrop (the pause menu and its pages), a script sets 0x800C0640, and
