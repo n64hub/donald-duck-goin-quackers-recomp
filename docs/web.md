@@ -44,7 +44,7 @@ So a plan reaches any level with a new game, without a save. The survey's header
 RDRAM as the game played (there is no decomp); the waits in a level are on the game's own clock, 60 a second of play.
 
 `tools/play_plan.json` (about 2.5 minutes) boots, shoots the menu and the world map, then plays the first world's trail
-(trail) with the pause menu, the city's sidewalk (sidewalk) and the haunted house (haunted_3_1).
+(trail) with the pause menu, the city's sidewalk (sidewalk) and a step into the haunted house (haunted_3_1).
 `tools/play_plan_extended.json` (about 5 minutes) goes on to four more levels. `tools/play_plan_levels.json` (about 10
 minutes, a release's check) visits every level of the game's table in turn, with a shot of each, and goes on past a
 level that doesn't play, so one play shows every level that fails. Play them with N64Recomp-browser's
