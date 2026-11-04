@@ -1,10 +1,10 @@
-# Rayman 2: Recompiled
+# Donald Duck: Goin' Quackers Recompiled
 
 > **Made with AI.** Almost all of the code, documentation and tests in this repo were written by AI agents
 > (Claude), directed and play-tested by a person. None of it is offered to the upstream projects it builds on, which
 > don't take AI-written code.
 
-A native PC port of the N64 *Rayman 2: The Great Escape* (USA), made by static recompilation
+A native PC port of the N64 *Donald Duck: Goin' Quackers* (USA; *Donald Duck: Quack Attack* in Europe), made by static recompilation
 ([N64Recomp](https://github.com/N64Recomp/N64Recomp) + [N64ModernRuntime](https://github.com/N64Recomp/N64ModernRuntime) +
 [RT64](https://github.com/rt64/rt64), with [RecompFrontend](https://github.com/N64Recomp/RecompFrontend)'s launcher
 and menus): the game's own MIPS code translated to C and run natively, with RT64 drawing it. There is no
@@ -13,16 +13,14 @@ decompilation of this game: its functions are found in the ROM's code by `tools/
 The repo holds no ROM, no asset from the game and no data extracted from it: you supply your own ROM, and nothing in
 git or CI is made from one except the function names, addresses and sizes in `syms/`.
 
-**Status:** released for Windows and Linux (`releases/`). The desktop build boots through the logos and the intro
-story, plays a new game into the Woods of Light, and loads and draws every level of the game's table, the pause menu
-and the world map's save prompt with them, with sound, Controller Pak saves, and keyboard and gamepad input. The game
-hasn't been played from start to end yet. The same game plays in a browser through WebGPU, at
-[n64hub.com/rayman-2](https://n64hub.com/rayman-2/) (`docs/web.md`).
+**Status:** in progress, not released. The game runs on the engine of Rayman 2's N64 version, so this repo starts
+from [Rayman 2: Recompiled](https://github.com/n64hub/rayman-2-recomp) and its hooks are found again at this game's
+addresses.
 
 ## The ROM
 
-*Rayman 2: The Great Escape* (USA), as a big-endian `.z64` of 32 MiB with SHA-1
-`50558356b059ad3fbaf5fe95380512b9dceaaf52`. Other regions and revisions are not supported.
+*Donald Duck: Goin' Quackers* (USA), as a big-endian `.z64` of 20 MiB with SHA-1
+`e31a7567d408c890065029ba537f830765b17d94`. Other regions and revisions are not supported.
 
 ## Building
 
