@@ -1,8 +1,9 @@
 # CLAUDE.md
 
-A static recompilation of the N64 *Rayman 2: The Great Escape* (USA) with N64Recomp, N64ModernRuntime, RecompFrontend
-and RT64. There is no decompilation of this game: its functions are found in the ROM's code. Almost all of it is
-written by AI agents, so this file is what the next one needs: the rules, where things are, and the facts about the
+A static recompilation of the N64 *Donald Duck: Goin' Quackers* (USA) with N64Recomp, N64ModernRuntime, RecompFrontend
+and RT64. There is no decompilation of this game: its functions are found in the ROM's code. It runs on the engine of
+Rayman 2's N64 version, so its hooks are Rayman 2: Recompiled's, found again at this game's addresses. Almost all of it
+is written by AI agents, so this file is what the next one needs: the rules, where things are, and the facts about the
 game the code can't say on its own.
 
 ## What lives where
@@ -55,7 +56,7 @@ This repo is the game: its recompilation, the hooks and patches over it, the des
 - **Spins.** The runtime runs one game thread at a time and switches only when the running one calls into it, where a
   console's interrupts preempt any thread. The game spins in three places that wait on its controller thread: for a
   Controller Pak request to end, and each frame for the controllers' read. Each pass yields (`us.toml`). Without them
-  the game freezes after "Expansion Pak detected!" at boot, or on the language menu with no input taken. A new hang
+  the game freezes at boot, on the screen after it reads the pak. A new hang
   with one thread busy and every other in `osRecvMesg` is another such loop: `--stacks` finds it.
 - **The idle watchdog.** The idle thread waits for the main thread's OSThread state to read libultra's
   OS_STATE_STOPPED (1) and then breaks into the game's crash handler. ultramodern keeps its own states in that field,
@@ -86,26 +87,21 @@ This repo is the game: its recompilation, the hooks and patches over it, the des
 - **The Expansion Pak.** The game finds the runtime's 8 MB and says so at boot ("Expansion Pak detected!").
 - **Input.** RecompFrontend's default bindings. Keyboard: WASD the stick, Space A, Left Shift B, Q Z, R R, E L, Enter
   Start, the arrows the C buttons. The game reads port 1 only.
-- **Widescreen.** RecompFrontend's Graphics tab defaults to Aspect Ratio Expand, Resolution Auto and Framerate
-  Display; RT64 widens the 3D. Original (Aspect Ratio Original) is the console's 4:3. A menu's backdrop (the pause
-  menu's swirl, while 0x800C0640 is set) is an opaque gradient at 4:3 over the frame's clear, a fill of the level's
-  fog colour that RT64 widens to the window's edges, so a hook in `us.toml` clears black under it: without it the
-  sides show the level's colour. `src/game/widescreen.cpp` widens what the game decides for a 4:3 screen: its culling
-  planes, its sprites and particles (projected on the CPU to texture rectangles and clipped to the screen, drawn past
-  it with RT64's extended GBI under a scissor `RT64_SCISSOR_INSIDE_FRAMEBUFFER` counts only to the frame's edges), its
-  full-screen fades, that backdrop's gradient, the scene transition it blacks out from the CPU (which needs
-  `RT64_STRETCH_CPU_CHANGES`) and its HUD, whose bars, icons and the counters beside them it draws from the wide
-  picture's edges with RT64's rectangle alignment (a dialogue, its speaker's face and other text stay in the middle),
-  none of them at Original; `CMakeLists.txt` sets both options. It also joins the title logo's overlapping tiles at
-  every aspect, each tile's clear edge given its neighbour's texels, which upscaled showed their seams.
-- **Interpolation.** The game moves some things only on its own frames, which RT64 moves on every frame drawn: its
-  texture scrolls (the intro's sky, the language menu's water), masked tiles stepped a texel on some frames and not
-  others (rt64-web 08427aa), and its menu cursor, a butterfly whose vertices the CPU places anew each frame with no
-  matrix ID (rt64-web a03baa2). The butterfly's light flickering between two levels is the game's own: vertex
-  colours it writes, no RSP light, the same at Original.
-- **The intro's white fade.** As "Ubi Soft presents" fades out, the intro story cuts to white and its next shot of the
-  sea comes up through a white fog in about 0.6 s, "PRESENTS" still fading over it. That is the game's own: a PAL
-  console's capture shows it, and so does the desktop build at Framerate Original and Aspect Ratio Original.
+- **Widescreen.** RecompFrontend's Graphics tab defaults to Aspect Ratio Expand, Resolution Auto and Framerate Display;
+  RT64 widens the 3D. Original (Aspect Ratio Original) is the console's 4:3. A menu's backdrop (the pause menu's swirl,
+  while 0x800C0640 is set) is an opaque gradient at 4:3 over the frame's clear, a fill of the level's fog colour that
+  RT64 widens to the window's edges, so a hook in `us.toml` clears black under it: without it the sides show the level's
+  colour. `src/game/widescreen.cpp` widens what the game decides for a 4:3 screen: its culling planes, its sprites and
+  particles (projected on the CPU to texture rectangles and clipped to the screen, drawn past it with RT64's extended
+  GBI under a scissor `RT64_SCISSOR_INSIDE_FRAMEBUFFER` counts only to the frame's edges), its full-screen fades, that
+  backdrop's gradient and its HUD, whose bars and icons (the counters' at the corners, a race's timer) and the counters
+  beside them it draws from the wide picture's edges with RT64's rectangle alignment (a dialogue, its speaker's face and
+  other text stay in the middle), none of them at Original. The scene transition, a spiral of black the CPU writes into
+  the framebuffer, is stretched across the picture by `RT64_STRETCH_CPU_CHANGES`, and `src/game/transition.cpp` keeps
+  its map out of a framebuffer that is still shown. The newscast that starts a new game opens behind a grey stone plate
+  drawn in 3D just in front of the camera, sized to the 4:3 screen, which `RT64_STRETCH_SCREEN_COVERS` stretches across
+  the picture. `CMakeLists.txt` sets all three options. `widescreen.cpp` also joins the title logo's overlapping tiles
+  at every aspect, each tile's clear edge given its neighbour's texels, which upscaled showed their seams.
 - **Testing.** `--boot` starts the game from the launcher's first frame once the ROM is stored, `--window <w>x<h>`
   sizes the window, `--input <file>` plays port 1 from a script of timed button states (`main.cpp` says the format),
   and on Windows `--stacks <seconds>` prints every thread's stack that long after start, for unattended runs and

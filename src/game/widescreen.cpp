@@ -4,6 +4,8 @@
 // func_80091AF0) and its HUD, placed at a 4:3 screen's corners (the hooks in func_800B439C and the sprites' and text's
 // drawers), each left alone at Original. Its scene transition, drawn from the CPU, needs nothing here: RT64 stretches
 // what the CPU writes across the wide picture (CMakeLists.txt), so the black closes in from the picture's edges.
+// Nor does a plate or fade it draws in 3D just in front of the camera to cover the 4:3 screen (the newscast opens
+// behind one): RT64_STRETCH_SCREEN_COVERS stretches it across the picture (CMakeLists.txt).
 // The 2D rectangles' hook also joins a big image's tiles, which show their seams upscaled at any aspect.
 
 #include <algorithm>
@@ -442,17 +444,17 @@ extern "C" int dq_wide_sprite(uint8_t* rdram, recomp_context* ctx) {
 
 // The HUD: func_800B439C draws it each frame, its bars and then its icons (the counters' icons at the corners, a race's
 // timer) through func_800B42C0, and then the text on screen through func_800BB0F0 (the counters beside those icons, a
-// dialogue, the intro's story). Each bar and icon is a sprite
-// that func_800912C4 places in percent of a 4:3 screen and draws with the 2D drawer, func_80091C5C, so in a wide
-// picture the HUD sat at the 4:3 corners. With RT64's extended GBI each one is drawn from the wide picture's edge
-// instead, as far from it as it was from the 4:3 screen's: one in the top half that starts in the screen's left third
-// and ends left of its right third from the left edge, one that ends in the right third and starts right of the left
-// third from the right edge (offset back by the screen's width), under a scissor that reaches the picture's edges, and
-// the alignment and scissor put back after it. A dialogue's speaker (Daisy's face in the newscast) is an icon too, in
-// the bottom left beside the dialogue's box, which stays in the middle, and so does it. Text moves only with an icon it sits beside and on
-// its side of the screen, so a counter goes with its icon and everything else (a dialogue, the story, a countdown)
-// stays in the middle: a text entry (func_800BB7FC draws one, a sprite a letter) is given room for those commands
-// before it, filled in once its letters say where it is. us.toml's hooks call these, none at Original.
+// dialogue, the intro's story). Each bar and icon is a sprite that func_800912C4 places in percent of a 4:3 screen and
+// draws with the 2D drawer, func_80091C5C, so in a wide picture the HUD sat at the 4:3 corners. With RT64's extended
+// GBI each one is drawn from the wide picture's edge instead, as far from it as it was from the 4:3 screen's: one in
+// the top half that starts in the screen's left third and ends left of its right third from the left edge, one that
+// ends in the right third and starts right of the left third from the right edge (offset back by the screen's width),
+// under a scissor that reaches the picture's edges, and the alignment and scissor put back after it. A dialogue's
+// speaker (Daisy's face in the newscast) is an icon too, in the bottom left beside the dialogue's box, which stays in
+// the middle, and so does it. Text moves only with an icon it sits beside and on its side of the screen, so a counter
+// goes with its icon and everything else (a dialogue, the story, a countdown) stays in the middle: a text entry
+// (func_800BB7FC draws one, a sprite a letter) is given room for those commands before it, filled in once its letters
+// say where it is. us.toml's hooks call these, none at Original.
 struct HudRect {
     float x0, y0, x1, y1; // percent of the screen
     uint32_t origin;
