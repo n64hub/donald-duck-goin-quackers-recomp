@@ -162,19 +162,10 @@ func = "func_800BB0F0"
 before_vram = 0x800BB2A4
 text = "{ void dq_hud_text_end(uint8_t*); dq_hud_text_end(rdram); }"
 
-# The rings' HUD, func_800B4A18 (a star's and Donald's counters at the top corners, sprites through func_80091AF0),
-# from its start to its return at 0x800B539C, and each rectangle the 2D drawer (func_80091C5C) writes meanwhile: at its
-# start (the list in a0, the rectangle in a1) and once it has the list's end in v0, at 0x80092884.
-# src/game/widescreen.cpp draws them from the wide picture's edges there (none at Original).
-[[patches.hook]]
-func = "func_800B4A18"
-before_vram = 0x800B4A18
-text = "{ void dq_rings_start(); dq_rings_start(); }"
-
-[[patches.hook]]
-func = "func_800B4A18"
-before_vram = 0x800B539C
-text = "{ void dq_rings_end(); dq_rings_end(); }"
+# The rings' HUD (a star's and Donald's counters at the top corners), objects the game places on the screen and draws
+# as sprites through func_80091AF0 while the byte at 0x800BF7E0 is set: each rectangle the 2D drawer (func_80091C5C)
+# writes meanwhile, at its start (the list in a0, the rectangle in a1) and once it has the list's end in v0, at
+# 0x80092884. src/game/widescreen.cpp draws them from the wide picture's edges there (none at Original).
 
 [[patches.hook]]
 func = "func_80091C5C"

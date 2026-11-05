@@ -1,9 +1,10 @@
 // Widescreen for what the game decides and draws for a 4:3 screen, which RT64's Aspect Ratio Expand (or Manual) widens
 // the picture past: its culling (us.toml's hook in func_80093B8C), its full-screen 2D rectangles (the hook in
 // func_80091C5C), a menu's backdrop (the hooks in func_800931E8), its sprites' clip to the screen (the hook in
-// func_80091AF0) and its HUD, placed at a 4:3 screen's corners (the hooks in func_800B439C, func_800B4A18 and the
-// sprites' and text's drawers), each left alone at Original. Its scene transition, drawn from the CPU, needs nothing here: RT64 stretches
-// what the CPU writes across the wide picture (CMakeLists.txt), so the black closes in from the picture's edges.
+// func_80091AF0) and its HUD, placed at a 4:3 screen's corners (the hooks in func_800B439C and the sprites' and
+// text's drawers, and the 2D drawer's for the rings), each left alone at Original. Its scene transition, drawn from the
+// CPU, needs nothing here: RT64 stretches what the CPU writes across the wide picture (CMakeLists.txt), so the black
+// closes in from the picture's edges.
 // Nor does a plate or fade it draws in 3D just in front of the camera to cover the 4:3 screen (the newscast opens
 // behind one): RT64_STRETCH_SCREEN_COVERS stretches it across the picture (CMakeLists.txt).
 // The 2D rectangles' hook also joins a big image's tiles, which show their seams upscaled at any aspect.
@@ -374,15 +375,18 @@ static constexpr uint32_t ex_command(uint32_t id) {
 }
 static constexpr uint32_t ex_origin_none = 0x800;
 
-// While the rings' HUD draws (below), whose sprites the game's own clip keeps to the 4:3 screen.
-static bool rings_pass = false;
+// While the game draws the objects it places on the screen, the rings' HUD among them (below), whose sprites its own clip
+// keeps to the 4:3 screen: func_8003C870 sets this byte around them.
+static bool rings_pass(uint8_t* rdram) {
+    return MEM_B(0, (gpr)(int32_t)0x800BF7E0) != 0;
+}
 
 extern "C" int dq_wide_sprite(uint8_t* rdram, recomp_context* ctx) {
     const gpr list = ctx->r4, rect = ctx->r5, screen = ctx->r7;
     const int32_t width = MEM_W(0x1C, screen) * 4, height = MEM_W(0x14, screen) * 4;
     int32_t x0 = MEM_W(0x0, rect), y0 = MEM_W(0x4, rect), x1 = MEM_W(0x8, rect), y1 = MEM_W(0xC, rect);
     const float k = widescreen_scale();
-    if (k <= 1.0f || rings_pass || (x0 >= 0 && x1 <= width)) {
+    if (k <= 1.0f || rings_pass(rdram) || (x0 >= 0 && x1 <= width)) {
         return 0;
     }
     // Rounded in, so the scissor never reaches past the picture.
@@ -608,26 +612,20 @@ extern "C" void dq_hud_text_end(uint8_t* rdram) {
     }
 }
 
-// The rings' HUD: func_800B4A18 draws the counters at the top corners (a ring with a star or Donald's face in it,
-// and a smaller ring with its count beside it) as sprites, through the sprites' clip (func_80091AF0) and the 2D drawer,
-// not through func_800B439C's pass, so in a wide picture they sat at the 4:3 corners. In Gyro's lab it parks them just
-// past the 4:3 screen's top left, where a console shows none of them, and dq_wide_sprite drew what reached past that
-// edge, a sliver of ring at the top of the picture. While it runs (us.toml's hooks at its start and end, none at
-// Original) the game's own clip keeps its sprites to the 4:3 screen, and each rectangle the 2D drawer writes on one side
-// of the screen (hud_side) is drawn from the wide picture's edge, as the HUD above: us.toml's hooks at the drawer's
-// start (the list in a0, the rectangle in a1, as dq_fix_rect's) and before it returns the list's end (v0).
+// The rings' HUD: the counters at the top corners (a ring with a star or Donald's face in it, and a smaller ring with
+// its count beside it) are objects the game places on the screen, not the HUD's pass's sprites. func_8003C870 draws a
+// frame: the world (func_8008EC5C), then with the byte at 0x800BF7E0 set the tree of objects at 0x800E1BB8
+// (func_800A0BEC), whose sprites go through the sprites' clip (func_80091AF0) and the 2D drawer, then the HUD's pass
+// (func_800B439C). So in a wide picture the rings sat at the 4:3 corners. In Gyro's lab the game parks them just past
+// the 4:3 screen's top left, where a console shows none of them, and dq_wide_sprite drew what reached past that edge, a
+// sliver of ring at the top of the picture. While the byte is set the game's own clip keeps its sprites to the 4:3
+// screen, and each rectangle the 2D drawer writes on one side of the screen (hud_side) is drawn from the wide picture's
+// edge, as the HUD above: us.toml's hooks at the drawer's start (the list in a0, the rectangle in a1, as dq_fix_rect's)
+// and before it returns the list's end (v0), none at Original.
 static bool rings_rect_aligned = false;
 
-extern "C" void dq_rings_start() {
-    rings_pass = widescreen_scale() > 1.0f;
-}
-
-extern "C" void dq_rings_end() {
-    rings_pass = false;
-}
-
 extern "C" gpr dq_rings_rect(uint8_t* rdram, gpr list, gpr rect) {
-    if (!rings_pass) {
+    if (widescreen_scale() <= 1.0f || !rings_pass(rdram)) {
         return list;
     }
     const float width = MEM_W(0, (gpr)(int32_t)0x8001A1B0) * 4 / 100.0f;
