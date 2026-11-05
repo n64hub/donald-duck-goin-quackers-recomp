@@ -88,8 +88,9 @@ This repo is the game: its recompilation, the hooks and patches over it, the des
   The game reads the controllers' status for a pak first, so port 1 reports one (`main.cpp`,
   `get_connected_device_info`); with none it never leaves the save slots' screen.
 - **The Expansion Pak.** The game finds the runtime's 8 MB and says so at boot ("Expansion Pak detected!").
-- **Input.** RecompFrontend's default bindings. Keyboard: WASD the stick, Space A, Left Shift B, Q Z, R R, E L, Enter
-  Start, the arrows the C buttons. The game reads port 1 only.
+- **Input.** RecompFrontend's default bindings, but for the stick and the C buttons (`src/game/config.cpp`). Keyboard:
+  WASD and the arrows the stick, as the game's PC version's arrows are, Space A, Left Shift B, Q Z, R R, E L, Enter
+  Start, T/F/G/H the C buttons. A pad's D-pad moves the stick too. The game reads port 1 only.
 - **Widescreen.** RecompFrontend's Graphics tab defaults to Aspect Ratio Expand, Resolution Auto and Framerate Display;
   RT64 widens the 3D. Original (Aspect Ratio Original) is the console's 4:3. A menu's backdrop (the pause menu's swirl,
   while 0x800C0640 is set) is an opaque gradient at 4:3 over the frame's clear, a fill of the level's fog colour that
