@@ -1,0 +1,1 @@
+**Fixed:** Donald no longer stays frozen after a talk. Once the last line of a talk (Gyro's in his lab, Louie's) was read, Donald often couldn't move again while the one he talked to went on talking. It happened most at 60 frames a second, where the game could miss the end of the speaker's last animation, which the talk waits for before it gives Donald back.

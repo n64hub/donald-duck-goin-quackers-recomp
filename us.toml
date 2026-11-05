@@ -206,6 +206,23 @@ func = "func_800931E8"
 before_vram = 0x80093478
 text = "{ void dq_widen_backdrop(uint8_t*); dq_widen_backdrop(rdram); }"
 
+# An animation's last frame. Each frame func_800282A8 steps an actor's animation player (s0 in func_80036930, its
+# animation in s3, whose first halfword is its count of frames). Where the player's frame didn't move the frame before
+# (+0xC3 set), func_80036930 takes a quick step: it works the frame out from the time (+0xCE frames a second since
+# +0xB4, by the engine's clock in milliseconds at 0x800E1BC4, or one on while 0x800BF6F0 steps the game a frame at a
+# time) and, at the last, sets +0x8F, which a script reads as the animation finished (func_80038B60). Otherwise func_80036B88 takes the full step, which first loops the
+# animation or starts the next one if the frame is the last, and then moves the frame on. An actor that takes the full
+# step every frame as well (+0xE8 set: the people Donald talks to) took both in one frame when the quick step reached
+# the last frame, and the full step looped the animation before any script saw +0x8F. A talk's script waits for the
+# speaker's end-of-talk animation to finish before it gives Donald back his controls, so a talk often held Donald for
+# good while the speaker went on talking: most times at 60 frames a second, where most frames don't move an animation,
+# and less often at the game's 30. Where the quick step would reach the last frame of an animation longer than one, +0xC3 is cleared, so
+# the full step reaches it and sets +0x8F, and the loop comes a frame later, as when each frame moves.
+[[patches.hook]]
+func = "func_80036930"
+before_vram = 0x800369D4
+text = "if (MEM_BU(0xC3, ctx->r16) != 0) { uint32_t n = MEM_HU(0, ctx->r19); uint32_t f = MEM_W(0, (gpr)(int32_t)0x800BF6F0) != 0 ? (uint32_t)MEM_HU(0x74, ctx->r16) + 1 : (uint32_t)((int32_t)MEM_BU(0xCE, ctx->r16) * (int32_t)(MEM_W(0, (gpr)(int32_t)0x800E1BC4) - MEM_W(0xB4, ctx->r16))) / 1000; if (n > 1 && f >= n) MEM_B(0xC3, ctx->r16) = 0; }"
+
 # The idle thread (func_800004C0, once it has started the game's threads) is a watchdog: it waits for the main thread's
 # OSThread state to read 1, libultra's OS_STATE_STOPPED, and then breaks. The runtime keeps its own states in that
 # field, where 1 is QUEUED, so it would break while the game runs. The runtime has no idle thread to stand in for, so
