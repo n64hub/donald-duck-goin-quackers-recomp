@@ -106,9 +106,12 @@ This repo is the game: its recompilation, the hooks and patches over it, the des
   colour. `src/game/widescreen.cpp` widens what the game decides for a 4:3 screen: its culling planes, its sprites and
   particles (projected on the CPU to texture rectangles and clipped to the screen, drawn past it with RT64's extended
   GBI under a scissor `RT64_SCISSOR_INSIDE_FRAMEBUFFER` counts only to the frame's edges), its full-screen fades, that
-  backdrop's gradient and its HUD, whose bars and icons (the counters' at the corners, a race's timer) and the counters
-  beside them it draws from the wide picture's edges with RT64's rectangle alignment (a dialogue, its speaker's face and
-  other text stay in the middle), none of them at Original. The scene transition, a spiral of black the CPU writes into
+  backdrop's gradient and its HUD, whose bars and icons (a race's timer, the rings at the top corners with the stars'
+  and the lives' counts) and the counters beside them it draws from the wide picture's edges with RT64's rectangle
+  alignment (a dialogue, its speaker's face and other text stay in the middle), none of them at Original. The rings are
+  sprites the game parks just past the 4:3 screen's top left in Gyro's lab, where a console shows none of them, so they
+  get the game's own clip and not the sprites' widening, which drew a sliver of them at the top of the picture there.
+  The scene transition, a spiral of black the CPU writes into
   the framebuffer, is stretched across the picture by `RT64_STRETCH_CPU_CHANGES`, and `src/game/transition.cpp` keeps
   its map out of a framebuffer that is still shown. The newscast that starts a new game opens behind a grey stone plate
   drawn in 3D just in front of the camera, sized to the 4:3 screen, which `RT64_STRETCH_SCREEN_COVERS` stretches across
