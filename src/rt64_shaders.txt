@@ -16,6 +16,8 @@
 # by hand, so keep them when recording again: the boot asks for the first in some runs of the plan and not others (the
 # recording didn't, three of a page's boot checks, the plan's first 20 s, did), and the second is the Controller Pak
 # manager's, which Start held through the boot opens (Enter held for 4 s from Start Game) and the plan never reaches.
+# The title's attract demos are recorded after the plan, into their levels' sections, by tools/shader_plan_demos.json
+# with record_shaders.mjs's --add (its header says how).
 c8112230 0018ac4f fc127fff fffff238 0803540e
 c8112230 0018ac4f fc127fff fffff238 088a000e
 c8112230 0018ac4f fc127fff fffff238 0803100e
@@ -58,6 +60,13 @@ c81049d8 00182c4f fcffabff fffcfe38 0807540a
 c81049d8 0018ac4f fc121bff fffffe38 0803540a
 c8112078 0018ac4f fc127fff fffff238 0803540a
 c81049d8 00182c4f fc122bff fffffe38 0807540a
+c8104a50 00182c4f fc522bff fffffe38 0aacaa0a
+c8104a50 00182c4f fc122bff fffffe38 0807540a
+c4104a54 00102cff fc527fff ff16f43f 0805540b
+c4104a54 0010acff fc127fff ff14f23f 0803540b
+c8112078 00182c4f fc527fff fffffa38 0800000e
+c8112078 00182c4f fc527fff fffffa38 0800000a
+00504244 0010ac4f fcffffff ff14f23f 0803542b
 section thehike
 c7024004 0010ac4f fc127fff fffcce38 0803540b
 c411307d 0010acff fc127fff fffcf238 0803540b
@@ -148,6 +157,13 @@ c8112078 0018ac4f fc127fff fffff238 0803540a
 c81049d8 00182c4f fc122bff fffffe38 0807540a
 c8112078 00182c4f fc527fff fffffa38 0800000e
 c8112078 00182c4f fc527fff fffffa38 0800000a
+c8104a50 00182c4f fc522bff fffffe38 0aacaa0a
+c8104a50 00182c4f fc122bff fffffe38 0807540a
+c4104a54 0010acff fc127fff ff14f23f 0803540b
+c4104a54 00102cff fc527fff ff16f43f 0805540b
+c8112230 0018ac4f fc127fff fffff238 0802440e
+c411307d 0010acff fc127fff fffcf238 088a000b
+c8112230 0018ac4f fc127fff fffff238 0802440a
 section city_boss
 c7024004 0010ac4f fc127fff fffcce38 0803540b
 c8112078 0018ac4f fc127fff fffff238 0802440e
@@ -169,6 +185,13 @@ c81049d8 00182c4f fcffabff fffcfe38 0807540a
 c81049d8 00182c4f fc122bff fffffe38 0807540a
 00552230 0008ac4f fcffffff fffdfcfe 0800000a
 c81049d8 0018ac4f fc121bff fffffe38 0803540a
+c8112230 0018ac4f fc127fff fffff238 0802440e
+c8104a50 00182c4f fc522bff fffffe38 0aacaa0a
+c8104a50 00182c4f fc122bff fffffe38 088e000a
+c8104a50 00182c4f fc122bff fffffe38 0807540a
+c4104a54 0010acff fc127fff ff14f23f 0803540b
+c4104a54 00102cff fc527fff ff16f43f 0805540b
+c8113078 0018ac4f fc127fff fffff238 0803100a
 section haunted_3_2
 c8113078 0018ac4f fc127fff fffff238 0802440e
 c8113078 0018ac4f fc127fff fffff238 0803100a
@@ -209,6 +232,18 @@ c8112078 0018ac4f fc127fff fffff238 0803540a
 00552230 0008ac4f fcffffff fffdfcfe 0800000a
 00553078 0008ac4f fc127e24 fffff3f9 0803100a
 c81049d8 00182c4f fc522bff fffffe38 0805540a
+c8112230 0018ac4f fc127fff fffff238 0802440e
+c8112230 0018ac4f fc127fff fffff238 088a000a
+c8104a50 00182c4f fc122bff fffffe38 0807540a
+c8104a50 00182c4f fc522bff fffffe38 0805540a
+c8104a50 00182c4f fc522bff fffffe38 0aacaa0a
+c411307d 0010acff fc127fff fffcf238 0803540b
+0c184a50 00182c4f fc1229ff ff17fe3f 0807540a
+c4104a54 00102cff fc527fff ff16f43f 0805540b
+00552230 0008ac4f fc127e24 fffff3f9 088a000e
+c4104a54 0010acff fc127fff ff14f23f 0803540b
+c8112078 00182c4f fc527fff fffffa38 0800000e
+c8112078 00182c4f fc527fff fffffa38 0800000a
 section haunted_3_b
 c7024004 0010ac4f fc127fff fffcce38 0803540b
 c8113078 0018ac4f fc127fff fffff238 0803100a
@@ -219,6 +254,14 @@ c81049d8 00182c4f fcffabff fffcfe38 0807540a
 c411307d 0010acff fc127fff fffcf238 0803540b
 c81049d8 00182c4f fc522bff fffffe38 0805540a
 c8112078 0018ac4f fc127fff fffff238 0803540a
+c8104a50 00182c4f fc522bff fffffe38 0aacaa0a
+c8104a50 00182c4f fc122bff fffffe38 0807540a
+c8104a50 00182c4f fc522bff fffffe38 088c000a
+c8104a50 00182c4f fc522bff fffffe38 0805540a
+c4104a54 0010acff fc127fff ff14f23f 0803540b
+c8112078 00182c4f fc527fff fffffa38 0800000e
+c8112078 00182c4f fc527fff fffffa38 0800000a
+c8112230 0018ac4f fc127fff fffff238 0802440e
 section haunted_boss
 c81049d8 00182c4f fc122bff fffffe38 0807540a
 c8112078 0018ac4f fc127fff fffff238 0803540a
@@ -243,6 +286,20 @@ c81049d8 00182c4f fc522bff fffffe38 0aacaa0a
 c81049d8 00182c4f fc122bff fffffe38 0807540a
 c81049d8 00182c4f fcffabff fffcfe38 0807540a
 c81049d8 00182c4f fc522bff fffffe38 0805540a
+c8112230 0018ac4f fc127fff fffff238 0802440e
+c8104a50 00182c4f fc522bff fffffe38 0aacaa0a
+c8104a50 00182c4f fc122bff fffffe38 0807540a
+c8104a50 00182c4f fc522bff fffffe38 0805540a
+c8112078 00182c4f fc527fff fffffa38 0800000e
+c8112078 00182c4f fc527fff fffffa38 0800000a
+c4104a54 0010acff fc127fff ff14f23f 0803540b
+c8104a50 0018ac4f fc121bff fffffe38 088a000e
+c8104a50 0018ac4f fc121bff fffffe38 088a000a
+c4104a54 00102cff fc527fff ff16f43f 0805540b
+c8112230 0018ac4f fc127fff fffff238 088a000a
+c8104a50 0018ac4f fc121bff fffffe38 0803100e
+c8104a50 0018ac4f fc121bff fffffe38 0803100a
+c8113078 0018ac4f fc127fff fffff238 0803100a
 section inca_4_3
 c7024004 0010ac4f fc127fff fffcce38 0803540b
 c8112078 0018ac4f fc127fff fffff238 0802440e

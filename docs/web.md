@@ -47,7 +47,8 @@ RDRAM as the game played (there is no decomp); the waits in a level are on the g
 (trail) with the pause menu, the city's sidewalk (sidewalk) and a step into the haunted house (haunted_3_1).
 `tools/play_plan_extended.json` (about 5 minutes) goes on to four more levels. `tools/play_plan_levels.json` (about 10
 minutes, a release's check) visits every level of the game's table in turn, with a shot of each, and goes on past a
-level that doesn't play, so one play shows every level that fails. Play them with N64Recomp-browser's
+level that doesn't play, so one play shows every level that fails. `tools/play_plan_demos.json` (about 5 minutes) is
+left at the title through its six attract demos, which the others press past. Play them with N64Recomp-browser's
 `tools/play_page.mjs` (its `docs/playing.md`).
 
 ## The shader list
@@ -57,6 +58,11 @@ first time the level draws. It is recorded by code with `tools/shader_plan.json`
 section plays and how to record it again). A play that misses a shader prints it (`play_page.mjs` counts the misses);
 add it to the section of the level it was missed in, or, for a screen any level shows (the pause menu), to the plan's
 last section, pause, which goes into the boot's.
+
+Left at the title, the game plays attract demos of six of its levels in turn (city_2_b, haunted_3_1, haunted_3_4,
+haunted_3_b, inca_4_2, trail), which draw some of their levels' shaders with other flags than a player's game does. The
+plan's start presses through the title, so `tools/shader_plan_demos.json` records them, after it, into those levels'
+sections (`record_shaders.mjs --add`; its header says how). A miss in a demo goes to the demo's level's section too.
 
 ## How it plays
 
