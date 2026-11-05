@@ -62,6 +62,11 @@ This repo is the game: its recompilation, the hooks and patches over it, the des
   OS_STATE_STOPPED (1) and then breaks into the game's crash handler. ultramodern keeps its own states in that field,
   where 1 is QUEUED, so the hook in `us.toml` parks the idle thread for good instead. Without it the program ends
   with 0xC0000409 a few seconds in.
+- **The clock.** The game zeroes libultra's time (`osSetTime`) at boot and before each of its intro screens, which wait
+  on `osGetTime`, and its engine's timers read it too. The runtime's `osGetTime` counts from the program's start, so
+  the game's `osSetTime` (0x80004320, which n64sym's signatures don't name) must carry its name for the runtime to
+  replace it (`tools/gen_syms.py`). Without it the launcher's time was the game's: after a minute or two there the
+  intro screens and the title ended at once, and the game went from one attract demo to the next, Start included.
 - **The RSP's done message.** ultramodern tells a game a graphics task's RSP work is done as RT64 starts it, which
   holds for games that keep a list's inputs until the RDP is done too. This one changes them once the RSP is done, so
   `runtime-patches/` sends the message once RT64 has read the list. Without it a slow renderer (lavapipe, a page on a
@@ -106,7 +111,8 @@ This repo is the game: its recompilation, the hooks and patches over it, the des
   drawn in 3D just in front of the camera, sized to the 4:3 screen, which `RT64_STRETCH_SCREEN_COVERS` stretches across
   the picture. `CMakeLists.txt` sets all three options. `widescreen.cpp` also joins the title logo's overlapping tiles
   at every aspect, each tile's clear edge given its neighbour's texels, which upscaled showed their seams.
-- **Testing.** `--boot` starts the game from the launcher's first frame once the ROM is stored, `--window <w>x<h>`
+- **Testing.** `--boot` starts the game from the launcher's first frame once the ROM is stored (`--boot-after
+  <seconds>` that long after it, as a player who leaves the launcher open), `--window <w>x<h>`
   sizes the window, `--input <file>` plays port 1 from a script of timed button states (`main.cpp` says the format),
   and on Windows `--stacks <seconds>` prints every thread's stack that long after start, for unattended runs and
   hangs.
