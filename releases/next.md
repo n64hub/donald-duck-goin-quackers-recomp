@@ -1,0 +1,1 @@
+**Fixed:** Gyro's outfit machine in the world hub no longer flickers at a display rate above the game's (120 Hz and up): the frames drawn between the game's own put its body out of place over its lid.
