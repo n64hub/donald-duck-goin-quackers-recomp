@@ -12,9 +12,10 @@
 # game's time. The plan's last section, pause, goes into section 0: the pause menu, which comes up in any level and
 # asks for its shaders a few at once, fewer than a section's build waits for, paused in trail. Not recorded: the
 # levels past their starts, the bosses' fights and the game's other cutscenes. Flags follow settings (filtering, HDR,
-# MSAA, upscaling), so a change to one of those defaults means recording again. Section 0's last line is added by
-# hand, so keep it when recording again: the boot asks for it in some runs of the plan and not others (the recording
-# didn't, three of a page's boot checks, the plan's first 20 s, did).
+# MSAA, upscaling), so a change to one of those defaults means recording again. Section 0's last two lines are added
+# by hand, so keep them when recording again: the boot asks for the first in some runs of the plan and not others (the
+# recording didn't, three of a page's boot checks, the plan's first 20 s, did), and the second is the Controller Pak
+# manager's, which Start held through the boot opens (Enter held for 4 s from Start Game) and the plan never reaches.
 c8112230 0018ac4f fc127fff fffff238 0803540e
 c8112230 0018ac4f fc127fff fffff238 088a000e
 c8112230 0018ac4f fc127fff fffff238 0803100e
@@ -48,6 +49,7 @@ c81049d8 0018ac4f fc121bff fffffe38 0803540e
 00504244 0010ac4f fcffffff ff14f23f 088a002b
 00552078 0008ac4f fc127e24 fffff3f9 088a000a
 00504a54 0010acff fc127fff ff14f23f 0803542b
+c8112230 0018ac4f fc527fff fffffa38 0800000a
 section trail
 c7024004 0010ac4f fc127fff fffcce38 0803540b
 c411307d 0010acff fc127fff fffcf238 0803540b
