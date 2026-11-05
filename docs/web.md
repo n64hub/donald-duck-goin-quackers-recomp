@@ -47,7 +47,8 @@ RDRAM as the game played (there is no decomp); the waits in a level are on the g
 (trail) with the pause menu, the city's sidewalk (sidewalk) and a step into the haunted house (haunted_3_1).
 `tools/play_plan_extended.json` (about 5 minutes) goes on to four more levels. `tools/play_plan_levels.json` (about 10
 minutes, a release's check) visits every level of the game's table in turn, with a shot of each, and goes on past a
-level that doesn't play, so one play shows every level that fails. Play them with N64Recomp-browser's
+level that doesn't play, so one play shows every level that fails. `tools/play_plan_demos.json` (about 5 minutes) is
+left at the title through its six attract demos, which the others press past. Play them with N64Recomp-browser's
 `tools/play_page.mjs` (its `docs/playing.md`).
 
 ## The shader list
