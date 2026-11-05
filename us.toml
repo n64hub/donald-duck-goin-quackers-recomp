@@ -83,6 +83,14 @@ func = "alEvtqPostEvent"
 before_vram = 0x8000F984
 text = "if (MEM_H(0, ctx->r5) != 9) { gpr item = MEM_W(0, ctx->r4); if (item == 0 || MEM_W(0, item) == 0) return; }"
 
+# The Controller Pak manager's font. Held at boot, Start opens the game's pak manager, and func_800F3E00 decodes its font
+# from the ROM with CPU loads from the cartridge's address (0xB0000B70), which the runtime doesn't map: the program
+# crashed a few seconds in. src/game/controller_pak.cpp does the decode from the ROM the runtime holds in its place.
+[[patches.hook]]
+func = "func_800F3E00"
+before_vram = 0x800F3E00
+text = "{ void dq_pak_manager_font(uint8_t*, recomp_context*); dq_pak_manager_font(rdram, ctx); return; }"
+
 # A menu's backdrop clears black. Each frame func_80082D04 clears the colour image with a fill of the viewport's colour
 # (+0x7C, the level's fog), or of black where 0x800C3D65 is set (the Controller Pak's
 # screens). While a menu shows its backdrop (the pause menu and its pages), a script sets 0x800C0640, and
