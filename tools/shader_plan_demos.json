@@ -1,0 +1,162 @@
+{
+ "page": "GoinQuackersRecompiled.html",
+ "header": [
+  "The title's attract demos, recorded into src/rt64_shaders.txt after tools/shader_plan.json, whose start presses",
+  "through the title: node lib/N64Recomp-browser/tools/record_shaders.mjs tools/shader_plan_demos.json build/web",
+  "roms/ddgq.us.z64 src/rt64_shaders.txt --add. Left at the title, the game plays a demo of six levels in turn, about",
+  "40 s each: city_2_b, haunted_3_1, haunted_3_4, haunted_3_b, inca_4_2 and trail. They draw some of their levels'",
+  "shaders with other flags than a player's game does, and inca_4_2's goes further than the plan's walk. Each section",
+  "is a load that waits at the title, picks its demo to play first (tools/survey.js's demo()) and records it to its",
+  "end into the section of its level, which a demo builds when it draws the level, as a player's game does. Its demo",
+  "plays first since the page prints a shader once a load: one an earlier demo drew would not print again."
+ ],
+ "load": [
+  [
+   "until",
+   "RT64: all [0-9]+ prebuilt shaders built|once the game draws",
+   45000
+  ],
+  [
+   "wait",
+   3000
+  ]
+ ],
+ "setup": [
+  [
+   "rom",
+   627,
+   364
+  ],
+  [
+   "wait",
+   3000
+  ]
+ ],
+ "start": [
+  [
+   "eval",
+   "(() => { try { FS.unlink('/home/web_user/.config/GoinQuackersRecompiled/saves/controllerpak_1.mpk'); return 'deleted'; } catch (e) { return 'none'; } })()"
+  ],
+  [
+   "click",
+   627,
+   364
+  ],
+  [
+   "wait",
+   1000
+  ],
+  [
+   "evalFile",
+   "survey.js"
+  ],
+  [
+   "need",
+   "dq.title()"
+  ]
+ ],
+ "sections": [
+  {
+   "name": "city_2_b",
+   "steps": [
+    [
+     "eval",
+     "dq.demo(0)"
+    ],
+    [
+     "need",
+     "dq.playing(\"city_2_b\", 60000)"
+    ],
+    [
+     "need",
+     "dq.ended()"
+    ]
+   ]
+  },
+  {
+   "name": "haunted_3_1",
+   "steps": [
+    [
+     "eval",
+     "dq.demo(1)"
+    ],
+    [
+     "need",
+     "dq.playing(\"haunted_3_1\", 60000)"
+    ],
+    [
+     "need",
+     "dq.ended()"
+    ]
+   ]
+  },
+  {
+   "name": "haunted_3_4",
+   "steps": [
+    [
+     "eval",
+     "dq.demo(2)"
+    ],
+    [
+     "need",
+     "dq.playing(\"haunted_3_4\", 60000)"
+    ],
+    [
+     "need",
+     "dq.ended()"
+    ]
+   ]
+  },
+  {
+   "name": "haunted_3_b",
+   "steps": [
+    [
+     "eval",
+     "dq.demo(3)"
+    ],
+    [
+     "need",
+     "dq.playing(\"haunted_3_b\", 60000)"
+    ],
+    [
+     "need",
+     "dq.ended()"
+    ]
+   ]
+  },
+  {
+   "name": "inca_4_2",
+   "steps": [
+    [
+     "eval",
+     "dq.demo(4)"
+    ],
+    [
+     "need",
+     "dq.playing(\"inca_4_2\", 60000)"
+    ],
+    [
+     "need",
+     "dq.ended()"
+    ]
+   ]
+  },
+  {
+   "name": "trail",
+   "steps": [
+    [
+     "eval",
+     "dq.demo(5)"
+    ],
+    [
+     "need",
+     "dq.playing(\"trail\", 60000)"
+    ],
+    [
+     "need",
+     "dq.ended()"
+    ]
+   ]
+  }
+ ]
+}

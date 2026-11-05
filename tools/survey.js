@@ -7,7 +7,10 @@
 // while one loads, 6 asks for a change of level), then the level's name at 0x800E1B54, the next level's at 0x800E1B72
 // and the first level's ("menu") at 0x800E1B90, 30 bytes each. go(name) writes the next level's name and mode 6, and
 // the game loads that level as it does at a level's end. The game's own clock is the word at 0x800C3D24, 60 a second
-// of play, stopped while a level loads and 0 until the menu first draws: the plans' clock steps read it.
+// of play, stopped while a level loads and 0 until the menu first draws: the plans' clock steps read it. Left at the
+// title (no level, mode 3), the game plays attract demos of six levels in turn, and the byte at 0x800C44D3 counts them:
+// the title plays the demo it holds next (0 city_2_b, 1 haunted_3_1, 2 haunted_3_4, 3 haunted_3_b, 4 inca_4_2, 5
+// trail) and steps it on, so demo(n) at the title picks the next.
 (() => {
   const byte = (a) => (n64r(a & ~3) >>> (24 - 8 * (a & 3))) & 255;
   const setByte = (a, v) => {
@@ -32,6 +35,22 @@
         if (dq.level() === level && dq.mode() === 9) return true;
       }
       console.log(`[survey] not playing ${level} after ${ms} ms: ${dq.where()}`);
+      return false;
+    },
+    // Waits up to ms for the title (no level yet, mode 3) and a second on it, true once there.
+    title: async (ms = 60000) => {
+      for (const t0 = Date.now(); Date.now() - t0 < ms; await sleep(100)) {
+        if (dq.level() === '' && dq.mode() === 3) { await sleep(1000); return true; }
+      }
+      console.log(`[survey] not at the title after ${ms} ms: ${dq.where()}`);
+      return false;
+    },
+    // The attract demo the title plays next, 0 to 5.
+    demo: (n) => { setByte(0x800C44D3, n); return true; },
+    // Waits up to ms for the level playing to end (a demo's end: back to the title, mode 3), true once it does.
+    ended: async (ms = 120000) => {
+      for (const t0 = Date.now(); Date.now() - t0 < ms; await sleep(100)) if (dq.mode() !== 9) return true;
+      console.log(`[survey] still playing after ${ms} ms: ${dq.where()}`);
       return false;
     },
     // Changes to the level (its name as the game's table has it, lower case: learn_10), and waits for it to play.

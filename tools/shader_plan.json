@@ -15,7 +15,9 @@
   "game's time. The plan's last section, pause, goes into section 0: the pause menu, which comes up in any level and",
   "asks for its shaders a few at once, fewer than a section's build waits for, paused in trail. Not recorded: the",
   "levels past their starts, the bosses' fights and the game's other cutscenes. Flags follow settings (filtering, HDR,",
-  "MSAA, upscaling), so a change to one of those defaults means recording again."
+  "MSAA, upscaling), so a change to one of those defaults means recording again. The title's attract demos, which",
+  "this plan presses through, are recorded after it into their levels' sections by tools/shader_plan_demos.json, with",
+  "record_shaders.mjs's --add (its header says how)."
  ],
  "load": [
   [

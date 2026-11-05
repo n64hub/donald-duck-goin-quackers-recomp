@@ -58,6 +58,11 @@ section plays and how to record it again). A play that misses a shader prints it
 add it to the section of the level it was missed in, or, for a screen any level shows (the pause menu), to the plan's
 last section, pause, which goes into the boot's.
 
+Left at the title, the game plays attract demos of six of its levels in turn (city_2_b, haunted_3_1, haunted_3_4,
+haunted_3_b, inca_4_2, trail), which draw some of their levels' shaders with other flags than a player's game does. The
+plan's start presses through the title, so `tools/shader_plan_demos.json` records them, after it, into those levels'
+sections (`record_shaders.mjs --add`; its header says how). A miss in a demo goes to the demo's level's section too.
+
 ## How it plays
 
 By the regular plan on a desktop GPU, uncapped at 3840x2000 on a busy host, Chrome presents 353 a second, held by
