@@ -1,0 +1,153 @@
+{
+ "page": "GoinQuackersRecompiled.html",
+ "header": [
+  "The page's plan for N64Recomp-browser's tools/play_page.mjs that plays the title's attract demos, about 5 minutes:",
+  "the launcher, Load ROM, Start Game, the logos and the title, and then nothing pressed while the game plays its six",
+  "demos in turn (city_2_b, haunted_3_1, haunted_3_4, haunted_3_b, inca_4_2, trail), with a shot of each 10 s in. Each",
+  "is a need that fails the run unless the game plays that level next (tools/survey.js's playing()). The regular plan",
+  "presses through the title, so only this one plays the demos and the shaders they draw (tools/shader_plan_demos.json)."
+ ],
+ "load": [
+  [
+   "until",
+   "RT64: all [0-9]+ prebuilt shaders built|once the game draws",
+   45000
+  ],
+  [
+   "wait",
+   3000
+  ]
+ ],
+ "setup": [
+  [
+   "rom",
+   627,
+   364
+  ],
+  [
+   "wait",
+   3000
+  ]
+ ],
+ "start": [
+  [
+   "eval",
+   "(() => { try { FS.unlink('/home/web_user/.config/GoinQuackersRecompiled/saves/controllerpak_1.mpk'); return 'deleted'; } catch (e) { return 'none'; } })()"
+  ],
+  [
+   "click",
+   627,
+   364
+  ],
+  [
+   "wait",
+   1000
+  ],
+  [
+   "evalFile",
+   "survey.js"
+  ],
+  [
+   "need",
+   "dq.title()"
+  ]
+ ],
+ "play": [
+  [
+   "need",
+   "dq.playing(\"city_2_b\", 60000)"
+  ],
+  [
+   "wait",
+   10000
+  ],
+  [
+   "shot",
+   "demo-city_2_b.png"
+  ],
+  [
+   "need",
+   "dq.ended()"
+  ],
+  [
+   "need",
+   "dq.playing(\"haunted_3_1\", 60000)"
+  ],
+  [
+   "wait",
+   10000
+  ],
+  [
+   "shot",
+   "demo-haunted_3_1.png"
+  ],
+  [
+   "need",
+   "dq.ended()"
+  ],
+  [
+   "need",
+   "dq.playing(\"haunted_3_4\", 60000)"
+  ],
+  [
+   "wait",
+   10000
+  ],
+  [
+   "shot",
+   "demo-haunted_3_4.png"
+  ],
+  [
+   "need",
+   "dq.ended()"
+  ],
+  [
+   "need",
+   "dq.playing(\"haunted_3_b\", 60000)"
+  ],
+  [
+   "wait",
+   10000
+  ],
+  [
+   "shot",
+   "demo-haunted_3_b.png"
+  ],
+  [
+   "need",
+   "dq.ended()"
+  ],
+  [
+   "need",
+   "dq.playing(\"inca_4_2\", 60000)"
+  ],
+  [
+   "wait",
+   10000
+  ],
+  [
+   "shot",
+   "demo-inca_4_2.png"
+  ],
+  [
+   "need",
+   "dq.ended()"
+  ],
+  [
+   "need",
+   "dq.playing(\"trail\", 60000)"
+  ],
+  [
+   "wait",
+   10000
+  ],
+  [
+   "shot",
+   "demo-trail.png"
+  ],
+  [
+   "need",
+   "dq.ended()"
+  ]
+ ]
+}
