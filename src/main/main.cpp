@@ -398,6 +398,9 @@ static bool get_n64_input(int player_index, uint16_t* buttons_out, float* x_out,
             }
         }
     }
+    if (ret && player_index == 0) {
+        dq::newscast_input(*buttons_out);
+    }
     return ret;
 }
 

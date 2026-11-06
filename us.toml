@@ -54,6 +54,13 @@ func = "func_800839EC"
 before_vram = 0x80083B2C
 text = "{ void yield_self(uint8_t*); static int32_t last = -1; while (MEM_W(0, (gpr)(int32_t)0x800C0A50) == last) yield_self(rdram); last = MEM_W(0, (gpr)(int32_t)0x800C0A50); MEM_W(0, (gpr)(int32_t)0x800C0A54) = last; }"
 
+# Skip Newscast (src/game/newscast.cpp): as each frame starts, a press of Start while a new game's newscast plays skips
+# it, when the option is on, by reloading the lab with the bytes its script reads as "newscast seen" set.
+[[patches.hook]]
+func = "func_800839EC"
+before_vram = 0x800839EC
+text = "{ void dq_newscast_frame(uint8_t*); dq_newscast_frame(rdram); }"
+
 # The sound engine's queue of calls (func_800AA59C adds a function and its argument to the array at 0x800DBE24, counted
 # in 0x800DBE1C) has room for 0x800DBE20's count, 250, and never checks it. A synthesizer player (func_800AA5F4) runs
 # and empties it as each audio frame is made, but it is filled at each retrace too: func_800AB198 adds the stop of

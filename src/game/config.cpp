@@ -1,7 +1,8 @@
 // The settings: RecompFrontend's General, Controls, Graphics, Sound and Mods tabs, with its default bindings. Its own
 // Graphics options carry what a recomp needs: Resolution and MS Anti-Aliasing (high resolution), Framerate
 // (interpolation to the display's rate) and Aspect Ratio and HUD Placement (widescreen). Its default bindings change in
-// one way: the arrow keys and a pad's D-pad move Donald too, as the game's PC version's arrows do.
+// one way: the arrow keys and a pad's D-pad move Donald too, as the game's PC version's arrows do. General adds one
+// option of the game's, Skip Newscast (newscast.cpp).
 
 #include <filesystem>
 
@@ -55,7 +56,7 @@ void dq::init_config() {
     general_options.has_rumble_strength = true;
     general_options.has_gyro_sensitivity = true;
     general_options.has_mouse_sensitivity = true;
-    recompui::config::create_general_tab(general_options);
+    dq::add_newscast_option(recompui::config::create_general_tab(general_options));
     recompui::config::create_controls_tab();
     recompui::config::create_graphics_tab();
     recompui::config::create_sound_tab();

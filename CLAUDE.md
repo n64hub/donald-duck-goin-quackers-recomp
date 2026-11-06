@@ -21,8 +21,8 @@ This repo is the game: its recompilation, the hooks and patches over it, the des
   RecompFrontend's.
 - `src/`: RecompFrontend's main (`src/main/main.cpp`, with the GameEntry), the code sections it gives the runtime
   (`src/main/register_overlays.cpp`), the natives the patches call (`src/game/recomp_api.cpp`), the Controller Pak
-  (`src/game/controller_pak.cpp`), the libultra functions the runtime lacks (`src/game/libultra.cpp`), the settings,
-  and on Windows a stack trace on a crash (`src/main/crash_trace.cpp`).
+  (`src/game/controller_pak.cpp`), the libultra functions the runtime lacks (`src/game/libultra.cpp`), the newscast's
+  skip (`src/game/newscast.cpp`), the settings, and on Windows a stack trace on a crash (`src/main/crash_trace.cpp`).
 - `lib/`: upstream `rt64`, `N64ModernRuntime` and `RecompFrontend` at the commits N64Recomp-browser's web forks are
   built on, and `N64Recomp-browser` at a release tag. The web support every recomp's page shares is developed and
   documented there; `tools/build_n64recomp.sh` and `CMakeLists.txt` apply its `patches/` to the other three, and
@@ -106,6 +106,11 @@ This repo is the game: its recompilation, the hooks and patches over it, the des
 - **Input.** RecompFrontend's default bindings, but for the stick and the C buttons (`src/game/config.cpp`). Keyboard:
   WASD and the arrows the stick, as the game's PC version's arrows are, Space A, Left Shift B, Q Z, R R, E L, Enter
   Start, T/F/G/H the C buttons. A pad's D-pad moves the stick too. The game reads port 1 only.
+- **The newscast's skip.** A new game opens on a newscast in Gyro's lab that the game plays through, with no button to
+  skip it. The lab's script plays it when two bytes the engine keeps across levels (0x800E282C, 0x800E282D) are 0: New
+  Game zeroes them, and leaving the lab or loading a save sets both to 10. General's Skip Newscast (On by default) has
+  Start during the newscast set them and reload the lab, which then starts as a load of New Game's own save does, with
+  Donald standing in it (`src/game/newscast.cpp`); its Original plays it through.
 - **Widescreen.** RecompFrontend's Graphics tab defaults to Aspect Ratio Expand, Resolution Auto and Framerate Display;
   RT64 widens the 3D. Original (Aspect Ratio Original) is the console's 4:3. A menu's backdrop (the pause menu's swirl,
   while 0x800C0640 is set) is an opaque gradient at 4:3 over the frame's clear, a fill of the level's fog colour that
