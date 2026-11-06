@@ -85,10 +85,6 @@ set(RT64_SCISSOR_INSIDE_FRAMEBUFFER ON)
 # camera and sized to the 4:3 screen: RT64_STRETCH_SCREEN_COVERS, on with Emscripten and here too, stretches it across
 # a wide picture.
 set(RT64_STRETCH_SCREEN_COVERS ON)
-# The outfit machine in Gyro's hub draws its body and a smaller part at one place and orientation, only scaled apart,
-# which RT64 paired across in a third of its frames at 120 Hz, its body drawn over its lid in the frames between:
-# RT64_MATCH_SCALES, on with Emscripten and here too, pairs them by their scales as well.
-set(RT64_MATCH_SCALES ON)
 add_compile_definitions(HLSL_CPU)
 
 if (WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
