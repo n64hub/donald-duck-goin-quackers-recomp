@@ -56,6 +56,11 @@ finding that explains the game's code goes here or beside that code.
   Start held at boot opens the game's Controller Pak manager, whose font the game reads with CPU loads straight from
   the cartridge's address, which the runtime doesn't map: a hook in `us.toml` decodes it from the ROM the runtime holds
   (`controller_pak.cpp`). Without it, a player pressing Start through the logos crashed the program.
+- **ROM patches.** A mod's `patch.bps` replaces the stored ROM after the runtime has copied the MB after ROM 0x1000
+  into memory and before the game starts. The game reads main and support out of ROM itself, and its music, sounds and
+  levels as it plays, so a patch of those takes; the boot segment's (0x1000 to 0x1DDF0) doesn't, and no patch of code
+  does, the code being recompiled. The *Music Repair Patch* changes the sequences and banks past 0xCC000 only and plays
+  as a mod (the README says how to make one).
 - **The Expansion Pak.** The game finds the runtime's 8 MB and says so at boot ("Expansion Pak detected!").
 - **Input.** RecompFrontend's default bindings, but for the stick and the C buttons (`src/game/config.cpp`). Keyboard:
   WASD and the arrows the stick, as the game's PC version's arrows are, Space A, Left Shift B, Q Z, R R, E L, Enter

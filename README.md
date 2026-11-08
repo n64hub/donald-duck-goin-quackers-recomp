@@ -26,6 +26,30 @@ addresses. The same game plays in a browser through WebGPU, at
 *Donald Duck: Goin' Quackers* (USA), as a big-endian `.z64` of 20 MiB with SHA-1
 `e31a7567d408c890065029ba537f830765b17d94`. Other regions and revisions are not supported.
 
+### A ROM hack's BPS patch, as a mod
+
+The game reads its music, sounds, textures and levels from the ROM as it plays, so a ROM hack that changes only data
+(the *Music Repair Patch*, say) needs no patched ROM: the runtime applies a mod's BPS patch to the stored ROM each time
+the game starts. Make the mod once from the hack's `.bps` for the USA ROM: a zip holding the patch as `patch.bps` and
+a `mod.json`,
+
+```json
+{
+  "game_id": "ddgq",
+  "id": "music_repair",
+  "display_name": "Music Repair Patch",
+  "version": "1.0.0",
+  "authors": ["the hack's authors"],
+  "minimum_recomp_version": "0.1.0"
+}
+```
+
+renamed to `<name>.nrm` and put in the mods folder (the launcher's Mods menu opens it). Only one enabled mod may
+carry a ROM patch. A patch made in another format (xdelta, IPS) becomes a BPS with Floating IPS: apply it to a copy
+of the ROM, then create a BPS from the original ROM to the patched one. A hack that changes the game's code doesn't
+work this way: the code is recompiled from the original ROM, and the boot segment (ROM 0x1000 to 0x1DDF0, code and
+data) is in memory before the patch is applied.
+
 ## Building
 
 You need that ROM at `roms/ddgq.us.z64`. On Windows: LLVM's clang-cl, CMake 3.31 and Ninja, and a clang
