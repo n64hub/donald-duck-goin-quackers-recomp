@@ -64,7 +64,9 @@ finding that explains the game's code goes here or beside that code.
 - **The Expansion Pak.** The game finds the runtime's 8 MB and says so at boot ("Expansion Pak detected!").
 - **Input.** RecompFrontend's default bindings, but for the stick and the C buttons (`src/game/config.cpp`). Keyboard:
   WASD and the arrows the stick, as the game's PC version's arrows are, Space A, Left Shift B, Q Z, R R, E L, Enter
-  Start, T/F/G/H the C buttons. A pad's D-pad moves the stick too. The game reads port 1 only.
+  Start, T/F/G/H the C buttons. A pad's D-pad moves the stick too. The game reads port 1 only: it has no mode for a
+  second player, so RecompFrontend's single-player mode plays every pad and the keyboard as port 1 (`main.cpp`), and
+  N64Recomp-browser's new-recomp checklist's item 3 (every controller its own port) doesn't apply.
 - **The newscast's skip.** A new game opens on a newscast in Gyro's lab that the game plays through, with no button to
   skip it. The lab's script plays it when two bytes the engine keeps across levels (0x800E282C, 0x800E282D) are 0: New
   Game zeroes them, and leaving the lab or loading a save sets both to 10. General's Skip Newscast (On by default) has
@@ -88,8 +90,12 @@ finding that explains the game's code goes here or beside that code.
   drawn in 3D just in front of the camera, sized to the 4:3 screen, which `RT64_STRETCH_SCREEN_COVERS` stretches across
   the picture. `CMakeLists.txt` sets all three options. `widescreen.cpp` also joins the title logo's overlapping tiles
   at every aspect, each tile's clear edge given its neighbour's texels, which upscaled showed their seams.
+- **Render to RAM.** RT64's exact copy of each frame into RDRAM, on the page too (`main.cpp` says why): the scene
+  transition's spiral is the CPU's writes into the frame the RDP drew, after it is drawn, so neither off nor the copy a
+  list late (N64Recomp-browser's checklist, item 7) fits.
 - **Testing.** `--boot` starts the game from the launcher's first frame once the ROM is stored (`--boot-after
   <seconds>` that long after it, as a player who leaves the launcher open), `--window <w>x<h>`
-  sizes the window, `--input <file>` plays port 1 from a script of timed button states (`main.cpp` says the format),
+  sizes the window, `--input <file>` plays port 1 from a script of timed button states and changes of level, as the
+  page's `tools/survey.js` makes them, to reach any level from a new game (`main.cpp` says the format),
   and on Windows `--stacks <seconds>` prints every thread's stack that long after start, for unattended runs and
   hangs.

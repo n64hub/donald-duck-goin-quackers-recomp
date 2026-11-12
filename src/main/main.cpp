@@ -11,6 +11,7 @@
 #include <cinttypes>
 #include <filesystem>
 #include <chrono>
+#include <mutex>
 
 #ifndef __EMSCRIPTEN__
 #include "nfd.h" // a browser has no native file dialogs; RecompFrontend asks the page instead
@@ -49,6 +50,7 @@
 #include "librecomp/game.hpp"
 #include "librecomp/mods.hpp"
 #include "librecomp/helpers.hpp"
+#include "recomp.h"
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -359,14 +361,25 @@ static std::string game_thread_name(const OSThread* t) {
 }
 
 // --input <file> (development): scripted port 1 input for unattended runs. Each line is "<seconds> <buttons hex> [x y]",
-// seconds counted from the game's first input read, and the last line whose time has passed is held. Lines starting
-// with # are comments.
+// seconds counted from the game's first input read, and the last line whose time has passed is held. A line
+// "<seconds> level <name>" changes to that level (its name as the game's table has it: city_2_b) once its time has
+// passed, at the first frame a level plays, as tools/survey.js's go() does on the page. Lines starting with # are
+// comments.
 struct ScriptedInput {
     double at;
     uint32_t buttons;
     float x, y;
 };
 static std::vector<ScriptedInput> input_script;
+
+struct ScriptedLevel {
+    double at;
+    std::string name;
+};
+static std::vector<ScriptedLevel> level_script;
+static std::mutex level_script_mutex;
+static size_t level_script_next = 0;
+static double input_script_now = 0.0;
 
 static void load_input_script(const char* path) {
     FILE* f = fopen(path, "r");
@@ -377,7 +390,11 @@ static void load_input_script(const char* path) {
     char line[256];
     while (fgets(line, sizeof(line), f) != nullptr) {
         ScriptedInput in{};
-        if (line[0] != '#' && sscanf(line, "%lf %x %f %f", &in.at, &in.buttons, &in.x, &in.y) >= 2) {
+        char level[32];
+        if (line[0] != '#' && sscanf(line, "%lf level %31s", &in.at, level) == 2) {
+            level_script.push_back({in.at, level});
+        }
+        else if (line[0] != '#' && sscanf(line, "%lf %x %f %f", &in.at, &in.buttons, &in.x, &in.y) >= 2) {
             input_script.push_back(in);
         }
     }
@@ -386,9 +403,13 @@ static void load_input_script(const char* path) {
 
 static bool get_n64_input(int player_index, uint16_t* buttons_out, float* x_out, float* y_out) {
     bool ret = recompinput::profiles::get_n64_input(player_index, buttons_out, x_out, y_out);
-    if (!input_script.empty() && player_index == 0) {
+    if ((!input_script.empty() || !level_script.empty()) && player_index == 0) {
         static const auto start = std::chrono::steady_clock::now();
         double now = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+        {
+            std::lock_guard lock{ level_script_mutex };
+            input_script_now = now;
+        }
         for (const ScriptedInput& in : input_script) {
             if (in.at <= now) {
                 *buttons_out = (uint16_t)in.buttons;
@@ -402,6 +423,23 @@ static bool get_n64_input(int player_index, uint16_t* buttons_out, float* x_out,
         dq::newscast_input(*buttons_out);
     }
     return ret;
+}
+
+// The level script's half that writes the game's memory, called as each frame starts (us.toml's hook beside the
+// newscast's). The engine's state, as src/game/newscast.cpp and tools/survey.js have it: the mode at 0x800E1B50 (9
+// plays a level, 6 changes to the next one) and the next level's name at 0x800E1B72.
+extern "C" void dq_script_frame(uint8_t* rdram) {
+    std::lock_guard lock{ level_script_mutex };
+    if (level_script_next >= level_script.size() || level_script[level_script_next].at > input_script_now ||
+        MEM_W(0, (gpr)(int32_t)0x800E1B50) != 9) {
+        return;
+    }
+    const std::string& name = level_script[level_script_next++].name;
+    for (int i = 0; i < 30; i++) {
+        MEM_B(i, (gpr)(int32_t)0x800E1B72) = i < (int)name.size() ? name[i] : 0;
+    }
+    MEM_W(0, (gpr)(int32_t)0x800E1B50) = 6;
+    fprintf(stderr, "--input: level %s\n", name.c_str());
 }
 
 // --boot (development): start the game on the launcher's first frame, as its Start Game option does, so a run
@@ -554,6 +592,15 @@ int main(int argc, char** argv) {
     // soon as a task fills it, is untried with this game.
     ultramodern::renderer::callbacks_t renderer_callbacks{
         .create_render_context = [](uint8_t* rdram, ultramodern::renderer::WindowHandle window_handle, bool developer_mode) {
+            // Render to RAM: RT64's exact copy, each display list's frame in RDRAM before the game goes on, on the page
+            // too, where each copy waits 5-6 ms for the browser's readback. The game's CPU writes into frames it drew: the
+            // scene transition's spiral blacks out the frame the RDP has drawn, and RT64 shows those writes by comparing
+            // RDRAM with its copy (RT64_STRETCH_CPU_CHANGES, CMakeLists.txt). With the copy a list late, a play from a new
+            // game to the first world's trail wrote three times to a framebuffer whose copy was still pending (RT64's
+            // console report), where a black word written over a black one would get the frame instead. Off isn't for
+            // a game that writes into its frames (N64Recomp-browser's docs/new-recomp.md, item 7), though the
+            // transitions played looked the same with it off on the desktop.
+            recompui::renderer::set_render_to_ram(true);
             return recompui::renderer::create_render_context(rdram, window_handle, ultramodern::renderer::PresentationMode::SkipBuffering, developer_mode);
         },
     };
