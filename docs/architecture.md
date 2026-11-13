@@ -86,7 +86,10 @@ finding that explains the game's code goes here or beside that code.
   get the game's own clip and not the sprites' widening, which drew a sliver of them at the top of the picture there.
   The scene transition, a spiral of black the CPU writes into
   the framebuffer, is stretched across the picture by `RT64_STRETCH_CPU_CHANGES`, and `src/game/transition.cpp` keeps
-  its map out of a framebuffer that is still shown. The newscast that starts a new game opens behind a grey stone plate
+  its map out of a framebuffer that is still shown. The spiral is written into the last frame the game drew, which RT64 also shows
+  interpolated at the display's rate from copies that never see the CPU's writes, and RT64 drops a present that falls
+  behind and with it its share of them: `runtime-patches/rt64-1-*` shows them, or the last frame could stand still and
+  cut to black, or the spiral stop partway. The newscast that starts a new game opens behind a grey stone plate
   drawn in 3D just in front of the camera, sized to the 4:3 screen, which `RT64_STRETCH_SCREEN_COVERS` stretches across
   the picture. `CMakeLists.txt` sets all three options. `widescreen.cpp` also joins the title logo's overlapping tiles
   at every aspect, each tile's clear edge given its neighbour's texels, which upscaled showed their seams.
