@@ -2,7 +2,10 @@
 // Graphics options carry what a recomp needs: Resolution and MS Anti-Aliasing (high resolution), Framerate
 // (interpolation to the display's rate) and Aspect Ratio and HUD Placement (widescreen). Its default bindings change in
 // one way: the arrow keys and a pad's D-pad move Donald too, as the game's PC version's arrows do. General adds one
-// option of the game's, Skip Newscast (newscast.cpp).
+// option of the game's, Skip Newscast (newscast.cpp), and keeps Rumble Strength (the game drives a Rumble Pak). It
+// leaves out Mouse Sensitivity and Gyro Sensitivity: the game's camera follows Donald where each level puts it, and
+// nothing the player presses turns it (docs/architecture.md, Input), so there is no camera for the mouse or a gyro to
+// turn, and Mouse Sensitivity above 0 would only hold the cursor in the window.
 
 #include <filesystem>
 
@@ -54,8 +57,6 @@ void dq::init_config() {
 
     recompui::config::GeneralTabOptions general_options{};
     general_options.has_rumble_strength = true;
-    general_options.has_gyro_sensitivity = true;
-    general_options.has_mouse_sensitivity = true;
     dq::add_newscast_option(recompui::config::create_general_tab(general_options));
     recompui::config::create_controls_tab();
     recompui::config::create_graphics_tab();
