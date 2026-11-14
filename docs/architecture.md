@@ -56,6 +56,12 @@ finding that explains the game's code goes here or beside that code.
   Start held at boot opens the game's Controller Pak manager, whose font the game reads with CPU loads straight from
   the cartridge's address, which the runtime doesn't map: a hook in `us.toml` decodes it from the ROM the runtime holds
   (`controller_pak.cpp`). Without it, a player pressing Start through the logos crashed the program.
+  A save is a pak note named by the slot's 3-letter game name, not by its slot: func_80096F34 allocates "DONALD DUCK
+  " and the name's first 3 letters (in the pak's own character codes), with the same empty extension for every slot,
+  and an overwrite (func_8003D45C) deletes the slot's old note and allocates a new one under the name entered now. So two
+  slots given the same name would be one note: the game itself asks "A game named AAA already exists
+  on this Controller Pak. Do you want to overwrite it?", and YES replaces the other slot's save. That prompt is the
+  game's own, as a console plays it, not the recompilation's; New Game's names default to AAA, BBB and CCC by slot.
 - **ROM patches.** A mod's `patch.bps` replaces the stored ROM after the runtime has copied the MB after ROM 0x1000
   into memory and before the game starts. The game reads main and support out of ROM itself, and its music, sounds and
   levels as it plays, so a patch of those takes; the boot segment's (0x1000 to 0x1DDF0) doesn't, and no patch of code
