@@ -1,0 +1,132 @@
+# Goin' Quackers' soak plan: one round through the game's menus and scenes on its Linux build, in about 140 s with the
+# boot, for N64Recomp-browser's tools/frame_dump.mjs --soak (through tools/remote_frame_dump.sh, its header says how):
+#
+#   tools/remote_frame_dump.sh <game dir> GoinQuackersRecompiled ddgq.n64.us.1.0 <rom> tools/soak_plan.txt <out> --soak 140
+#
+# It fails on a Crash: line, the program exiting, the picture standing still for 10 s, or an until unmet: a level the
+# game never plays, or Donald frozen after a talk. The steps are tools/capture_window.ps1's, at seconds since the
+# program started, each until moving the later ones on by its wait. The title and Start (Enter) to the menu, New Game
+# with A (Space) to the newscast in Gyro's lab, skipped with Start (General's Skip Newscast, On by default), and Donald
+# standing in the lab: his position is three floats at 0x801C9344 (x, y, z), x 26.6 there. Then Gyro's talk, the
+# scene of a softlock players reported (#6, fixed in v0.1.6): D walks Donald to Gyro until x is under 14, B (Shift)
+# five times steps the talk's four pages and ends it, and A walks him off until x is 16 or more. A Donald frozen after
+# the talk while Gyro talks on keeps the picture moving, so only that until catches it: v0.1.5's play by this plan
+# (the newscast played through, it has no skip) failed there, v0.1.13's passed. Then a change of level as the game's
+# own exits ask for one (tools/survey.js says how): the next level's name at 0x800E1B72 and mode 6 at 0x800E1B53, until
+# the level's name at 0x800E1B54 (its letters either case, up to its NUL: a shorter name copied over a longer one
+# leaves the rest) and mode 9, playing. Duckie Mountain's first level with random input (W, A, S, D and A; B opens
+# the prompt to leave the level) and the pause menu; a chase, Duckburg, Magica's manor, Merlock's temple and a boss
+# with random input; the credits.
+3 until 0x800E1B54 0xDFDFDFDF 0x4D454E55 60 Enter
+5 shot 01_menu
+# New Game with A (Space), to the newscast in Gyro's lab (mapmonde)
+5 until 0x800E1B54 0xDFDFDFDF 0x4D41504D 60 Space
+5 until 0x800E1B50 0x000000FF 0x00000009 60
+8 shot 02_newscast
+# Start skips it (General's Skip Newscast), and the lab reloads with Donald standing in it
+8 key Enter
+# Donald stands in the lab (x comes positive)
+8 until 0x801C9344 0xFF000000 0x41000000 30
+10 shot 03_lab
+# Gyro's talk: walked to (x under 14), stepped with B, walked off (x 16 or more)
+10 down D
+10 until 0x801C9344 0xFFE00000 0x41400000 10
+10 up D
+12 key Shift
+14 key Shift
+14.5 shot 04_talk
+16.5 key Shift
+18.5 key Shift
+20.5 key Shift
+23 down A
+23 until 0x801C9344 0xFF800000 0x41800000 15
+23 up A
+23.5 shot 05_walked
+# trail: Duckie Mountain's first level, random input, then the pause menu and back
+23.5 poke 0x800E1B70 0x00007472
+23.5 poke 0x800E1B74 0x61696C00
+23.5 poke 0x800E1B78 0x00000000
+23.5 poke 0x800E1B7C 0x00000000
+23.5 poke 0x800E1B50 0x00000006
+23.5 until 0x800E1B54 0xDFDFDFDF 0x54524149 60
+23.5 until 0x800E1B58 0xDFFF0000 0x4C000000 60
+23.5 until 0x800E1B50 0x000000FF 0x00000009 60
+24.5 random W,A,S,D,Space
+34.5 random off
+34.5 shot 06_trail
+35.5 key Enter
+37.5 shot 07_pause
+38.5 key S
+39.5 key W
+40.5 key Space
+42.5 shot 08_resumed
+# forest_chase: a chase, random input
+42.5 poke 0x800E1B70 0x0000666F
+42.5 poke 0x800E1B74 0x72657374
+42.5 poke 0x800E1B78 0x5F636861
+42.5 poke 0x800E1B7C 0x73650000
+42.5 poke 0x800E1B50 0x00000006
+42.5 until 0x800E1B54 0xDFDFDFDF 0x464F5245 60
+42.5 until 0x800E1B58 0xDFDFDFDF 0x53545F43 60
+42.5 until 0x800E1B50 0x000000FF 0x00000009 60
+43.5 random W,A,S,D,Space
+52.5 random off
+52.5 shot 09_forest_chase
+# sidewalk: Duckburg, random input
+52.5 poke 0x800E1B70 0x00007369
+52.5 poke 0x800E1B74 0x64657761
+52.5 poke 0x800E1B78 0x6C6B0000
+52.5 poke 0x800E1B7C 0x00000000
+52.5 poke 0x800E1B50 0x00000006
+52.5 until 0x800E1B54 0xDFDFDFDF 0x53494445 60
+52.5 until 0x800E1B58 0xDFDFDFDF 0x57414C4B 60
+52.5 until 0x800E1B50 0x000000FF 0x00000009 60
+53.5 random W,A,S,D,Space
+62.5 random off
+62.5 shot 10_sidewalk
+# haunted_3_1: Magica's manor, random input
+62.5 poke 0x800E1B70 0x00006861
+62.5 poke 0x800E1B74 0x756E7465
+62.5 poke 0x800E1B78 0x645F335F
+62.5 poke 0x800E1B7C 0x31000000
+62.5 poke 0x800E1B50 0x00000006
+62.5 until 0x800E1B54 0xDFDFDFDF 0x4841554E 60
+62.5 until 0x800E1B58 0xDFDFDFDF 0x5445445F 60
+62.5 until 0x800E1B50 0x000000FF 0x00000009 60
+63.5 random W,A,S,D,Space
+72.5 random off
+72.5 shot 11_haunted_3_1
+# inca_4_1: Merlock's temple, random input
+72.5 poke 0x800E1B70 0x0000696E
+72.5 poke 0x800E1B74 0x63615F34
+72.5 poke 0x800E1B78 0x5F310000
+72.5 poke 0x800E1B7C 0x00000000
+72.5 poke 0x800E1B50 0x00000006
+72.5 until 0x800E1B54 0xDFDFDFDF 0x494E4341 60
+72.5 until 0x800E1B58 0xDFDFDFDF 0x5F145F11 60
+72.5 until 0x800E1B50 0x000000FF 0x00000009 60
+73.5 random W,A,S,D,Space
+82.5 random off
+82.5 shot 12_inca_4_1
+# forest_boss: a boss, random input
+82.5 poke 0x800E1B70 0x0000666F
+82.5 poke 0x800E1B74 0x72657374
+82.5 poke 0x800E1B78 0x5F626F73
+82.5 poke 0x800E1B7C 0x73000000
+82.5 poke 0x800E1B50 0x00000006
+82.5 until 0x800E1B54 0xDFDFDFDF 0x464F5245 60
+82.5 until 0x800E1B58 0xDFDFDFDF 0x53545F42 60
+82.5 until 0x800E1B50 0x000000FF 0x00000009 60
+83.5 random W,A,S,D,Space
+92.5 random off
+92.5 shot 13_forest_boss
+# credits: the credits
+92.5 poke 0x800E1B70 0x00006372
+92.5 poke 0x800E1B74 0x65646974
+92.5 poke 0x800E1B78 0x73000000
+92.5 poke 0x800E1B7C 0x00000000
+92.5 poke 0x800E1B50 0x00000006
+92.5 until 0x800E1B54 0xDFDFDFDF 0x43524544 60
+92.5 until 0x800E1B58 0xDFDFDFFF 0x49545300 60
+92.5 until 0x800E1B50 0x000000FF 0x00000009 60
+102.5 shot 14_credits
