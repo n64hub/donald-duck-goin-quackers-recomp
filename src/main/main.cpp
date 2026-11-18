@@ -597,9 +597,9 @@ int main(int argc, char** argv) {
             // scene transition's spiral blacks out the frame the RDP has drawn, and RT64 shows those writes by comparing
             // RDRAM with its copy (RT64_STRETCH_CPU_CHANGES, CMakeLists.txt). With the copy a list late, a play from a new
             // game to the first world's trail wrote three times to a framebuffer whose copy was still pending (RT64's
-            // console report), where a black word written over a black one would get the frame instead. Off isn't for
-            // a game that writes into its frames (N64Recomp-browser's docs/new-recomp.md, item 7), though the
-            // transitions played looked the same with it off on the desktop.
+            // console report), where a black word written over a black one would get the frame instead. Off isn't for a
+            // game that writes into its frames, though the transitions played looked the same with it off on the
+            // desktop.
             recompui::renderer::set_render_to_ram(true);
             return recompui::renderer::create_render_context(rdram, window_handle, ultramodern::renderer::PresentationMode::SkipBuffering, developer_mode);
         },

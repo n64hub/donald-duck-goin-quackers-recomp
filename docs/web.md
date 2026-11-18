@@ -10,8 +10,7 @@ What is the game's own stays here: the `EMSCRIPTEN` branches of `CMakeLists.txt`
 list's header says how to record it again), the play plans (`tools/play_plan.json`, `tools/play_plan_extended.json`)
 and the survey they share (`tools/survey.js`). The rest is N64Recomp-browser's: `docs/porting.md` (WebGPU and the
 shaders, prebuilt shader lists, Emscripten), `docs/playing.md` (playing and measuring a page), `docs/forks.md` and
-`docs/findings.md`. Every play of this game's page is a line in N64Recomp-browser's `plays.jsonl` (game `ddgq`), never a
-record here. The page is published at [n64hub.com/goin-quackers](https://n64hub.com/goin-quackers/).
+`docs/findings.md`. The page is published at [n64hub.com/goin-quackers](https://n64hub.com/goin-quackers/).
 
 ## Build it
 
@@ -68,5 +67,4 @@ sections (`record_shaders.mjs --add`; its header says how). A miss in a demo goe
 
 By the regular plan on a desktop GPU, uncapped at 3840x2000 on a busy host, Chrome presents 353 a second, held by
 the uncapped rate, and Firefox 260 (140-289), each with no misses and no WebGPU errors; their longest frame gaps
-(1.1-1.8 s) are the plan's changes of level, Firefox's with the shaders of the level it reaches. Its runs are in
-N64Recomp-browser's `plays.jsonl` (`ddgq`).
+(1.1-1.8 s) are the plan's changes of level, Firefox's with the shaders of the level it reaches.
