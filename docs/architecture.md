@@ -110,5 +110,10 @@ finding that explains the game's code goes here or beside that code.
   sizes the window, `--input <file>` plays port 1 from a script of timed button states and changes of level, as the
   page's `tools/survey.js` makes them, to reach any level from a new game (`main.cpp` says the format),
   and on Windows `--stacks <seconds>` prints every thread's stack that long after start, for unattended runs and
-  hangs. `tools/soak_plan.txt` plays one round of the game's menus and scenes on its Linux build, for a crash or a
+  hangs.
+  The Controller Pak save and a restart are checked by machine on the Linux build, with `saves/` and the pak behind
+  symlinks: `tools/save_plan.txt` is the save run's plan (a new game in the first slot, under the name it offers) and
+  `tools/load_plan.txt` the load run's after the restart (the slot's line read off the pak as the game boots, the
+  pak's bytes the same until a second game is saved, written through the links).
+  `tools/soak_plan.txt` plays one round of the game's menus and scenes on its Linux build, for a crash or a
   hang, Gyro's talk included (its header says how).
