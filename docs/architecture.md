@@ -110,4 +110,5 @@ finding that explains the game's code goes here or beside that code.
   sizes the window, `--input <file>` plays port 1 from a script of timed button states and changes of level, as the
   page's `tools/survey.js` makes them, to reach any level from a new game (`main.cpp` says the format),
   and on Windows `--stacks <seconds>` prints every thread's stack that long after start, for unattended runs and
-  hangs.
+  hangs. `tools/soak_plan.txt` plays one round of the game's menus and scenes on its Linux build, for a crash or a
+  hang, Gyro's talk included (its header says how).
