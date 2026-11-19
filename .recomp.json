@@ -1,0 +1,24 @@
+{
+  "$schema": "https://recomp.fyi/schema/v1.json",
+  "game": "Donald Duck: Goin' Quackers",
+  "system": "N64",
+  "type": "recomp",
+  "original": {
+    "region": "USA",
+    "sha1": "e31a7567d408c890065029ba537f830765b17d94"
+  },
+  "project": "Donald Duck: Goin' Quackers Recompiled",
+  "status": "released",
+  "targets": [
+    "Windows",
+    "Linux",
+    "Browser"
+  ],
+  "toolchain": "N64recomp",
+  "links": [
+    {
+      "label": "Play in a browser",
+      "url": "https://n64hub.com/goin-quackers/"
+    }
+  ]
+}
