@@ -56,6 +56,10 @@
    "survey.js"
   ],
   [
+   "need",
+   "dq.booted()"
+  ],
+  [
    "pressUntil",
    "Enter",
    "Enter",

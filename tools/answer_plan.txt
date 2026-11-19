@@ -10,6 +10,9 @@
 # from standing with the stick, D, the Right arrow and the D-pad, and held for 1.5 s, each put back by untimed pad
 # steps. No press turns this game's camera, so Donald's walk is what answers. v0.1.13 passed it, answering in
 # 149-234 ms and settling 62-154 ms after the release.
+# Nothing is pressed until the game counts retraces, 0x800C0A50 at 64-127 (0xCCCCCCCC before the game clears it): Start
+# held as the game boots opens its Controller Pak manager, as on a console (docs/architecture.md, Testing).
+0 until 0x800C0A50 0xFFFFFFC0 0x00000040 30
 5 until 0x800E1B54 0xDFDFDFDF 0x4D454E55 90 Enter
 10 until 0x800E1B54 0xDFDFDFDF 0x4D41504D 120 Space
 11 until 0x800E1B50 0x000000FF 0x00000009 60

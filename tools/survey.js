@@ -7,7 +7,10 @@
 // while one loads, 6 asks for a change of level), then the level's name at 0x800E1B54, the next level's at 0x800E1B72
 // and the first level's ("menu") at 0x800E1B90, 30 bytes each. go(name) writes the next level's name and mode 6, and
 // the game loads that level as it does at a level's end. The game's own clock is the word at 0x800C3D24, 60 a second
-// of play, stopped while a level loads and 0 until the menu first draws: the plans' clock steps read it. Left at the
+// of play, stopped while a level loads and 0 until the menu first draws: the plans' clock steps read it. Start held as
+// the game boots opens its Controller Pak manager (docs/architecture.md, Testing), so a plan's first press waits for
+// booted(): the game's count of retraces, at 0x800C0A50, starts only once that check is past (0xCCCCCCCC until the game
+// clears it). Left at the
 // title (no level, mode 3), the game plays attract demos of six levels in turn, and the byte at 0x800C44D3 counts them:
 // the title plays the demo it holds next (0 city_2_b, 1 haunted_3_1, 2 haunted_3_4, 3 haunted_3_b, 4 inca_4_2, 5
 // trail) and steps it on, so demo(n) at the title picks the next.
@@ -29,6 +32,15 @@
     clock: () => n64r(0x800C3D24),
     // The level's name and the mode, for a plan's log.
     where: () => `level ${dq.level() || '-'} mode ${dq.mode()} clock ${dq.clock()}`,
+    // Waits up to ms for the game to count a second of retraces, past the boot's check for Start held, true once it has.
+    booted: async (ms = 60000) => {
+      for (const t0 = Date.now(); Date.now() - t0 < ms; await sleep(100)) {
+        const count = n64r(0x800C0A50);
+        if (count >= 60 && count < 0x10000000) return true;
+      }
+      console.log(`[survey] no retraces counted after ${ms} ms: ${dq.where()}`);
+      return false;
+    },
     // Waits up to ms for the game to play the level (mode 9), true once it does.
     playing: async (level, ms = 30000) => {
       for (const t0 = Date.now(); Date.now() - t0 < ms; await sleep(100)) {

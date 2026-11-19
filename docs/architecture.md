@@ -119,3 +119,8 @@ finding that explains the game's code goes here or beside that code.
   hang, Gyro's talk included (its header says how).
   `tools/answer_plan.txt` moves Donald on the trail with the stick, the keys and the D-pad, and checks the picture
   answers at once and stays where the press leaves it (its header says how).
+  A plan presses nothing until the game counts retraces (0x800C0A50, which reads 0xCCCCCCCC until the game clears it
+  and counts only once the boot's check for Start is past): the plans' first step on the desktop, `booted()` in
+  `tools/survey.js` on the page. Start held at that check opens the Controller Pak manager (Saves), as on a console,
+  where the game stands for good, its sound silent and its level never "menu", and a press every 1.5 s from the start
+  of the boot met the check in about one boot of 13. The check comes 1.5-15 s into the boot, later on a busy host.
