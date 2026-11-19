@@ -239,3 +239,14 @@ text = "if (MEM_BU(0xC3, ctx->r16) != 0) { uint32_t n = MEM_HU(0, ctx->r19); uin
 func = "func_800004C0"
 before_vram = 0x80000698
 text = "{ void pause_self(uint8_t*); pause_self(rdram); }"
+
+# A scene's fog. func_800875CC makes a fog light's multiplier and offset from its near and far distances (f20, f22) and
+# its fog's start and end (f24, f26), and stops the game with its assertion (func_8008498C, which breaks, and the runtime
+# closes the program for it) when far isn't past near or end isn't past start. Rayman 2, on the same engine, has a
+# cutscene whose script pulls the fog's end in by growing steps until one, in a slow frame, put it past the start, and
+# the program closed. Out of order, far and end are put just past near and start before the checks, which draws the
+# scene fogged over.
+[[patches.hook]]
+func = "func_800875CC"
+before_vram = 0x80087658
+text = "if (!(ctx->f20.fl < ctx->f22.fl)) ctx->f22.fl = ctx->f20.fl + 1.0f; if (!(ctx->f24.fl < ctx->f26.fl)) ctx->f26.fl = ctx->f24.fl + 1.0f;"

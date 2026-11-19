@@ -46,6 +46,11 @@ finding that explains the game's code goes here or beside that code.
   to loop the animation and clear it before the script looked. Donald stood frozen after the talk while the speaker
   talked on. A hook in `us.toml` leaves the last frame to the full step, which sets the flag and loops a frame
   later, as at 30.
+- **A scene's fog.** func_800875CC makes a fog light's multiplier and offset from its near and far distances and
+  its fog's start and end, and asserts (func_8008498C, which breaks: the runtime closes the program) that far is past
+  near and end past start. Rayman 2, on the same engine, has a cutscene whose script pulls the end in by growing steps,
+  one of which, in a slow frame, put it past the start and closed the program. A hook in `us.toml` puts the two in
+  order before the checks, which draws the scene fogged over.
 - **Microcodes.** Graphics: F3DEX.NoN 1.23, which RT64 knows. Audio: `aspMain` (libultra's ABI 1), recompiled by
   RSPRecomp from `aspMain.us.toml`. librecomp's vector unit uses SSE4.1, so `RecompiledFuncs` builds with
   `-march=nehalem` on x86-64.
