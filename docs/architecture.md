@@ -117,3 +117,5 @@ finding that explains the game's code goes here or beside that code.
   pak's bytes the same until a second game is saved, written through the links).
   `tools/soak_plan.txt` plays one round of the game's menus and scenes on its Linux build, for a crash or a
   hang, Gyro's talk included (its header says how).
+  `tools/answer_plan.txt` moves Donald on the trail with the stick, the keys and the D-pad, and checks the picture
+  answers at once and stays where the press leaves it (its header says how).
