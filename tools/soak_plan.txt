@@ -17,6 +17,9 @@
 # leaves the rest) and mode 9, playing. Duckie Mountain's first level with random input (W, A, S, D and A; B opens
 # the prompt to leave the level) and the pause menu; a chase, Duckburg, Magica's manor, Merlock's temple and a boss
 # with random input; the credits.
+# Nothing is pressed until the game counts retraces, 0x800C0A50 at 64-127 (0xCCCCCCCC before the game clears it): Start
+# held as the game boots opens its Controller Pak manager, as on a console (docs/architecture.md, Testing).
+0 until 0x800C0A50 0xFFFFFFC0 0x00000040 30
 3 until 0x800E1B54 0xDFDFDFDF 0x4D454E55 60 Enter
 5 shot 01_menu
 # New Game with A (Space), to the newscast in Gyro's lab (mapmonde)
