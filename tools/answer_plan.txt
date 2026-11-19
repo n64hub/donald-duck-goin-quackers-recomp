@@ -1,0 +1,37 @@
+# Goin' Quackers' answer plan: a press reaches the picture at once and the picture stays where the press leaves it, on
+# its Linux build, for N64Recomp-browser's tools/frame_dump.mjs answer steps (through tools/remote_frame_dump.sh, its
+# header says how):
+#
+#   tools/remote_frame_dump.sh <game dir> GoinQuackersRecompiled ddgq.n64.us.1.0 <rom> tools/answer_plan.txt <out> --no-dump
+#
+# Each answer step presses a control from a picture that holds still and fails when the picture answers later than
+# 500 ms after the press, or settles later than 1000 ms after the release. The title and Start (Enter) to the menu, a
+# new game with A (Space) to the world map, then the trail (as tools/soak_plan.txt changes level): Donald moved right
+# from standing with the stick, D, the Right arrow and the D-pad, and held for 1.5 s, each put back by untimed pad
+# steps. No press turns this game's camera, so Donald's walk is what answers. v0.1.13 passed it, answering in
+# 149-234 ms and settling 62-154 ms after the release.
+5 until 0x800E1B54 0xDFDFDFDF 0x4D454E55 90 Enter
+10 until 0x800E1B54 0xDFDFDFDF 0x4D41504D 120 Space
+11 until 0x800E1B50 0x000000FF 0x00000009 60
+# trail: Donald standing on it, playing
+16 poke 0x800E1B70 0x00007472
+16.1 poke 0x800E1B74 0x61696C00
+16.2 poke 0x800E1B50 0x00000006
+17 until 0x800E1B54 0xDFDFDFDF 0x54524149 60
+18 until 0x800E1B50 0x000000FF 0x00000009 60
+28 shot trail
+29 answer walk-right leftx 32767 0.4 500 1000
+34 pad leftx -32768
+34.4 pad leftx 0
+36 answer key-d key:d 1 0.4 500 1000
+41 key a 400
+43 answer key-right key:Right 1 0.4 500 1000
+48 key Left 400
+50 answer dpad-right dpright 1 0.4 500 1000
+55 pad dpleft 1
+55.4 pad dpleft 0
+57 answer hold-right leftx 32767 1.5 500 1000
+63 pad leftx -32768
+64.5 pad leftx 0
+66 shot end
+67 end
