@@ -55,12 +55,13 @@ finding that explains the game's code goes here or beside that code.
   RSPRecomp from `aspMain.us.toml`. librecomp's vector unit uses SSE4.1, so `RecompiledFuncs` builds with
   `-march=nehalem` on x86-64.
 - **Saves.** The game saves only to a Controller Pak (libultra's `osPfs*`), so `main.cpp` declares no cartridge save
-  and `src/game/controller_pak.cpp` keeps a pak of 123 pages in `saves/controllerpak_1.mpk`, the format emulators use.
+  and turns on the runtime's pak in port 1 (`controller_pak_ports`; `librecomp/src/pak.cpp`, from N64Recomp-browser's
+  patches), a pak of 123 pages in `saves/controllerpak_1.mpk`, the format emulators use.
   The game reads the controllers' status for a pak first, so port 1 reports one (`main.cpp`,
   `get_connected_device_info`); with none it never leaves the save slots' screen.
   Start held at boot opens the game's Controller Pak manager, whose font the game reads with CPU loads straight from
   the cartridge's address, which the runtime doesn't map: a hook in `us.toml` decodes it from the ROM the runtime holds
-  (`controller_pak.cpp`). Without it, a player pressing Start through the logos crashed the program.
+  (`src/game/pak_manager.cpp`). Without it, a player pressing Start through the logos crashed the program.
   A save is a pak note named by the slot's 3-letter game name, not by its slot: func_80096F34 allocates "DONALD DUCK
   " and the name's first 3 letters (in the pak's own character codes), with the same empty extension for every slot,
   and an overwrite (func_8003D45C) deletes the slot's old note and allocates a new one under the name entered now. So two

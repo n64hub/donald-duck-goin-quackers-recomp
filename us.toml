@@ -93,7 +93,7 @@ text = "if (MEM_H(0, ctx->r5) != 9) { gpr item = MEM_W(0, ctx->r4); if (item == 
 
 # The Controller Pak manager's font. Held at boot, Start opens the game's pak manager, and func_800F3E00 decodes its font
 # from the ROM with CPU loads from the cartridge's address (0xB0000B70), which the runtime doesn't map: the program
-# crashed a few seconds in. src/game/controller_pak.cpp does the decode from the ROM the runtime holds in its place.
+# crashed a few seconds in. src/game/pak_manager.cpp does the decode from the ROM the runtime holds in its place.
 [[patches.hook]]
 func = "func_800F3E00"
 before_vram = 0x800F3E00
