@@ -78,6 +78,11 @@ On Linux the same lines take `clang` and `clang++` in place of `clang-cl`, and t
 `syms/` is written from the ROM by `tools/gen_syms.py` (its header says how; it needs spimdisasm and n64sym's
 signatures). Only a change to how it finds functions needs it again.
 
+## Thanks
+
+Thanks to [mirrorsedgefan](https://github.com/mirrorsedgefan) for testing it and reporting what they found, from
+a softlock and the hub world's HUD to the controls and the frame rate.
+
 ## License
 
 GPL-3.0 (`LICENSE`), as the recompilations it follows.
