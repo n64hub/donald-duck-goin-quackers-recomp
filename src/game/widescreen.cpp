@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <cstdio>
+#include <cstdlib>
 
 #include "recomp.h"
 #include "ultramodern/config.hpp"
@@ -447,6 +449,92 @@ extern "C" int dq_wide_sprite(uint8_t* rdram, recomp_context* ctx) {
     write(ex_command(0x18), 0); // gEXPopScissor
     ctx->r2 = at;
     return 1;
+}
+
+// A level's sky: func_8008E718 draws it each frame with the 2D drawer (func_80091C5C, called at 0x8008EA58 with the
+// screen in a3) as texture rectangles over the 4:3 screen, its texture scrolled across as the camera turns. In a wide
+// picture the sides showed nothing of it, and since the frame's clear fills the screen only where a level has no sky
+// (func_80082D04's flag), they kept whatever the frames before left there: the 3D drawn over them left trails.
+// dq_sky_start writes the commands that open a scissor out to the picture's edges before the drawer's, and dq_sky_end
+// turns each rectangle that reaches a 4:3 edge into RT64's extended one, out to the picture's edge, its texture
+// coordinate there moved back by as much as the rectangle grew, so the sky runs on at the same scale; then puts the
+// scissor back. None at Original.
+static gpr sky_list = 0;
+static int32_t sky_width = 0, sky_height = 0;
+
+extern "C" gpr dq_sky_start(uint8_t* rdram, gpr list, gpr screen) {
+    sky_list = 0;
+    const float k = getenv("DQ_SKY_OFF") != nullptr ? 1.0f : widescreen_scale();
+    if (k <= 1.0f) {
+        return list;
+    }
+    sky_width = MEM_W(0x1C, screen) * 4;
+    sky_height = MEM_W(0x14, screen) * 4;
+    const int32_t left = -(int32_t)std::floor((k - 1.0f) * sky_width * 0.5f), right = sky_width - left;
+    gpr at = list;
+    auto write = [&](uint32_t w0, uint32_t w1) {
+        MEM_W(0, at) = (int32_t)w0;
+        MEM_W(4, at) = (int32_t)w1;
+        at += 8;
+    };
+    write(0x00525464u, (1u << 28) | 0x64u); // gEXEnable
+    write(ex_command(0x17), 0); // gEXPushScissor
+    write(ex_command(0x05), (ex_origin_none << 2) | (ex_origin_none << 14)); // gEXSetScissor, G_SC_NON_INTERLACE
+    write(((uint32_t)left & 0xFFFF) << 16, (((uint32_t)right & 0xFFFF) << 16) | ((uint32_t)sky_height & 0xFFFF));
+    sky_list = at;
+    return at;
+}
+
+extern "C" gpr dq_sky_end(uint8_t* rdram, gpr end) {
+    if (sky_list == 0) {
+        return end;
+    }
+    const gpr start = sky_list;
+    sky_list = 0;
+    static int dumps = 0;
+    const bool dump = getenv("DQ_SKY_DUMP") != nullptr && dumps < 3;
+    if (dump) {
+        dumps++;
+        fprintf(stderr, "sky list %08X-%08X screen %d x %d k %.3f\n", (uint32_t)start, (uint32_t)end, sky_width,
+            sky_height, widescreen_scale());
+        for (gpr c = start; c < end; c += 8) {
+            fprintf(stderr, "  %08X %08X\n", (uint32_t)MEM_W(0, c), (uint32_t)MEM_W(4, c));
+        }
+    }
+    const int32_t left = -(int32_t)std::floor((widescreen_scale() - 1.0f) * sky_width * 0.5f), right = sky_width - left;
+    for (gpr command = start; command + 24 <= end; command += 8) {
+        if (((uint32_t)MEM_W(0, command) >> 24) != 0xE4 || ((uint32_t)MEM_W(8, command) >> 24) != 0xB4 ||
+            ((uint32_t)MEM_W(16, command) >> 24) != 0xB3) {
+            continue;
+        }
+        // G_TEXRECT: right and bottom in the first word, the tile and left and top in the second, 10.2 each.
+        const uint32_t w0 = (uint32_t)MEM_W(0, command), w1 = (uint32_t)MEM_W(4, command);
+        int32_t x0 = (w1 >> 12) & 0xFFF, y0 = w1 & 0xFFF, x1 = (w0 >> 12) & 0xFFF, y1 = w0 & 0xFFF;
+        const uint32_t tile = (w1 >> 24) & 7;
+        const uint32_t coords = (uint32_t)MEM_W(12, command), steps = (uint32_t)MEM_W(20, command);
+        int32_t s = (int16_t)(coords >> 16);
+        const int32_t dsdx = (int16_t)(steps >> 16);
+        if (x0 <= 0) {
+            s -= ((x0 - left) * dsdx) >> 7;
+            x0 = left;
+        }
+        if (x1 >= sky_width - 4) {
+            x1 = right;
+        }
+        MEM_W(0, command) = (int32_t)ex_command(0x02); // gEXTextureRectangle
+        MEM_W(4, command) = (int32_t)(tile | (ex_origin_none << 3) | (ex_origin_none << 15));
+        MEM_W(8, command) = (int32_t)((((uint32_t)x0 & 0xFFFF) << 16) | ((uint32_t)y0 & 0xFFFF));
+        MEM_W(12, command) = (int32_t)((((uint32_t)x1 & 0xFFFF) << 16) | ((uint32_t)y1 & 0xFFFF));
+        MEM_W(16, command) = (int32_t)((((uint32_t)s & 0xFFFF) << 16) | (coords & 0xFFFF));
+        MEM_W(20, command) = (int32_t)steps;
+        if (dump) {
+            fprintf(stderr, "  rect %d,%d-%d,%d tile %u s %d\n", x0, y0, x1, y1, tile, s);
+        }
+        command += 16;
+    }
+    MEM_W(0, end) = (int32_t)ex_command(0x18); // gEXPopScissor
+    MEM_W(4, end) = 0;
+    return end + 8;
 }
 
 // The HUD: func_800B439C draws it each frame, its bars and then its icons (the counters' icons at the corners, a race's
