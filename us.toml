@@ -135,6 +135,16 @@ text = "{ void dq_fix_rect(uint8_t*, gpr, gpr); dq_fix_rect(rdram, ctx->r17, ctx
 # menu's gradient (func_800931E8) joins it. src/game/widescreen.cpp draws the sky out to the wide picture's edges there
 # (none at Original).
 [[patches.hook]]
+func = "func_80082D04"
+before_vram = 0x80082D04
+text = "{ void dq_debug_event(uint8_t*, int, gpr); dq_debug_event(rdram, 0, ctx->r6); }"
+
+[[patches.hook]]
+func = "func_8008E718"
+before_vram = 0x8008E764
+text = "{ void dq_debug_event(uint8_t*, int, gpr); dq_debug_event(rdram, 1, ctx->r2); }"
+
+[[patches.hook]]
 func = "func_8008E718"
 before_vram = 0x8008E7CC
 text = "{ void dq_sky_mode(uint8_t*, gpr); dq_sky_mode(rdram, ctx->r16); }"

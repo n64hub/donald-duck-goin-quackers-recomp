@@ -768,3 +768,16 @@ extern "C" gpr dq_rings_rect_end(uint8_t* rdram, gpr end) {
     rings_rect_aligned = false;
     return write_hud_unalign(rdram, end);
 }
+
+// DEBUG: per level, the frame clear's flags and whether the sky's function runs.
+extern "C" void dq_debug_event(uint8_t* rdram, int what, gpr value) {
+    static char last[3][16] = {};
+    static gpr last_value[3] = { (gpr)-1, (gpr)-1, (gpr)-1 };
+    char name[16];
+    dq_level_name(rdram, name);
+    if (getenv("DQ_SKY_DUMP") && (strcmp(name, last[what]) != 0 || value != last_value[what])) {
+        fprintf(stderr, "event %d: level %s value %llX\n", what, name, (unsigned long long)value);
+        strcpy(last[what], name);
+        last_value[what] = value;
+    }
+}
