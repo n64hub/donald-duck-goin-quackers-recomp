@@ -1,10 +1,10 @@
 // Widescreen for what the game decides and draws for a 4:3 screen, which RT64's Aspect Ratio Expand (or Manual) widens
-// the picture past: its culling (us.toml's hook in func_80093B8C), its full-screen 2D rectangles (the hook in
-// func_80091C5C), a menu's backdrop (the hooks in func_800931E8), its sprites' clip to the screen (the hook in
-// func_80091AF0) and its HUD, placed at a 4:3 screen's corners (the hooks in func_800B439C and the sprites' and
-// text's drawers, and the 2D drawer's for the rings), each left alone at Original. Its scene transition, drawn from the
-// CPU, needs nothing here: RT64 stretches what the CPU writes across the wide picture (CMakeLists.txt), so the black
-// closes in from the picture's edges.
+// the picture past: its frame clear (us.toml's hook in func_80028D58), its culling (the hook in func_80093B8C), its
+// full-screen 2D rectangles (the hook in func_80091C5C), a menu's backdrop (the hooks in func_800931E8), its sprites'
+// clip to the screen (the hook in func_80091AF0) and its HUD, placed at a 4:3 screen's corners (the hooks in
+// func_800B439C and the sprites' and text's drawers, and the 2D drawer's for the rings), each left alone at Original.
+// Its scene transition, drawn from the CPU, needs nothing here: RT64 stretches what the CPU writes across the wide
+// picture (CMakeLists.txt), so the black closes in from the picture's edges.
 // Nor does a plate or fade it draws in 3D just in front of the camera to cover the 4:3 screen (the newscast opens
 // behind one): RT64_STRETCH_SCREEN_COVERS stretches it across the picture (CMakeLists.txt).
 // The 2D rectangles' hook also joins a big image's tiles, which show their seams upscaled at any aspect.
@@ -76,6 +76,17 @@ extern "C" void dq_widen_cull_planes(uint8_t* rdram, gpr camera) {
         store_f32(rdram, plane + 0x8, c / length);
         store_f32(rdram, plane + 0xC, d / length);
     }
+}
+
+// The frame's clear: func_80028D58 has func_80082D04 clear the depth buffer each frame, and the colour image too
+// (flags 3) only where the byte at 0x800BF540 is set and the word at 0x800F0790 clear: in the other levels (flags 2,
+// 11 of 24, Duckie Mountain's among them) their 3D, sky and scenery, covers a 4:3 screen, so a console never shows
+// what is under it. A wide picture shows past what the level builds for that view, and nothing cleared there, so the
+// 3D drawn over it left trails of the frames before. Returns the flags to clear with: the colour too in a wide
+// picture, a fill of the level's fog colour that RT64 widens to the window's edges, as the levels with a clear have;
+// the game's at Original.
+extern "C" gpr dq_clear_flags(gpr flags) {
+    return widescreen_scale() > 1.0f ? (flags | 1) : flags;
 }
 
 // Keeps a scaled rectangle's texture coordinates inside its texture. RT64 puts a texel's centre on its whole coordinate,

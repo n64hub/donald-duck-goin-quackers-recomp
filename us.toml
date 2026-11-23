@@ -111,6 +111,16 @@ func = "func_80082D04"
 before_vram = 0x80082EF0
 text = "if (MEM_BU(0, (gpr)(int32_t)0x800C0640) != 0) ctx->r3 = 1;"
 
+# The frame's clear in a wide picture. func_80028D58 calls func_80082D04 at 0x80028F2C with its flags in a2: 3 (the
+# colour image and the depth buffer) where the byte at 0x800BF540 is set and the word at 0x800F0790 clear, else 2 (the
+# depth buffer alone): 11 of the 24 levels, whose sky and scenery cover a 4:3 screen. A wide picture shows past them,
+# where nothing was cleared, so the 3D left trails there; src/game/widescreen.cpp has the colour cleared too (none at
+# Original).
+[[patches.hook]]
+func = "func_80028D58"
+before_vram = 0x80028F2C
+text = "{ gpr dq_clear_flags(gpr); ctx->r6 = dq_clear_flags(ctx->r6); }"
+
 # Widescreen culling. func_80093B8C sets a camera up for a frame: its fields of view (+0x64 across, +0x68 up), its
 # projection (guPerspective) and the four planes at +0x98 that the game tests what it draws against, built for 4:3.
 # RT64 widens the 3D to the window but the game left out whatever was past those planes, so in a wide picture objects

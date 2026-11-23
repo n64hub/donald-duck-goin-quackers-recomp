@@ -91,8 +91,13 @@ finding that explains the game's code goes here or beside that code.
   RT64 widens the 3D. Original (Aspect Ratio Original) is the console's 4:3. A menu's backdrop (the pause menu's swirl,
   while 0x800C0640 is set) is an opaque gradient at 4:3 over the frame's clear, a fill of the level's fog colour that
   RT64 widens to the window's edges, so a hook in `us.toml` clears black under it: without it the sides show the level's
-  colour. `src/game/widescreen.cpp` widens what the game decides for a 4:3 screen: its culling planes, its sprites and
-  particles (projected on the CPU to texture rectangles and clipped to the screen, drawn past it with RT64's extended
+  colour. The frame's clear (func_80082D04) fills the colour image too only where the byte at 0x800BF540 is set and the
+  word at 0x800F0790 clear: in the other levels (11 of 24: Duckie Mountain's trail, thehike, brush, forest_1_b and
+  forest_boss among them) it clears the depth buffer alone, their sky and scenery covering a 4:3 screen, so a wide
+  picture's sides kept the frames before and the 3D drawn over them left trails. `src/game/widescreen.cpp` has the
+  colour cleared too in a wide picture, the sides then the level's fog colour where nothing is drawn, and widens what
+  the game decides for a 4:3 screen: its culling planes, its sprites and particles (projected on the CPU to texture
+  rectangles and clipped to the screen, drawn past it with RT64's extended
   GBI under a scissor `RT64_SCISSOR_INSIDE_FRAMEBUFFER` counts only to the frame's edges), its full-screen fades, that
   backdrop's gradient and its HUD, whose bars and icons (a race's timer, the rings at the top corners with the stars'
   and the lives' counts) and the counters beside them it draws from the wide picture's edges with RT64's rectangle
