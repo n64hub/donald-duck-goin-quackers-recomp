@@ -79,12 +79,12 @@ extern "C" void dq_widen_cull_planes(uint8_t* rdram, gpr camera) {
 }
 
 // The frame's clear: func_80028D58 has func_80082D04 clear the depth buffer each frame, and the colour image too
-// (flags 3) only in a level that draws no sky of its own over the whole screen: in the others (flags 2, Duckie
-// Mountain's levels among them) its 3D, sky and scenery, covers a 4:3 screen, so a console never shows what is under
-// it. A wide picture shows past what the level builds for that view, and nothing cleared there, so the 3D drawn over
-// it left trails of the frames before. Returns the flags to clear with: the colour too in a wide picture, a fill of
-// the level's fog colour that RT64 widens to the window's edges, as the levels with a clear have; the game's at
-// Original.
+// (flags 3) only where the byte at 0x800BF540 is set and the word at 0x800F0790 clear: in the other levels (flags 2,
+// 11 of 24, Duckie Mountain's among them) their 3D, sky and scenery, covers a 4:3 screen, so a console never shows
+// what is under it. A wide picture shows past what the level builds for that view, and nothing cleared there, so the
+// 3D drawn over it left trails of the frames before. Returns the flags to clear with: the colour too in a wide
+// picture, a fill of the level's fog colour that RT64 widens to the window's edges, as the levels with a clear have;
+// the game's at Original.
 extern "C" gpr dq_clear_flags(gpr flags) {
     return widescreen_scale() > 1.0f ? (flags | 1) : flags;
 }
