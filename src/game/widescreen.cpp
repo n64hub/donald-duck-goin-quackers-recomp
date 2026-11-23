@@ -1,10 +1,10 @@
 // Widescreen for what the game decides and draws for a 4:3 screen, which RT64's Aspect Ratio Expand (or Manual) widens
-// the picture past: its culling (us.toml's hook in func_80093B8C), its full-screen 2D rectangles (the hook in
-// func_80091C5C), a menu's backdrop (the hooks in func_800931E8), its sprites' clip to the screen (the hook in
-// func_80091AF0) and its HUD, placed at a 4:3 screen's corners (the hooks in func_800B439C and the sprites' and
-// text's drawers, and the 2D drawer's for the rings), each left alone at Original. Its scene transition, drawn from the
-// CPU, needs nothing here: RT64 stretches what the CPU writes across the wide picture (CMakeLists.txt), so the black
-// closes in from the picture's edges.
+// the picture past: its frame clear (us.toml's hook in func_80028D58), its culling (the hook in func_80093B8C), its
+// full-screen 2D rectangles (the hook in func_80091C5C), a menu's backdrop (the hooks in func_800931E8), its sprites'
+// clip to the screen (the hook in func_80091AF0) and its HUD, placed at a 4:3 screen's corners (the hooks in
+// func_800B439C and the sprites' and text's drawers, and the 2D drawer's for the rings), each left alone at Original.
+// Its scene transition, drawn from the CPU, needs nothing here: RT64 stretches what the CPU writes across the wide
+// picture (CMakeLists.txt), so the black closes in from the picture's edges.
 // Nor does a plate or fade it draws in 3D just in front of the camera to cover the 4:3 screen (the newscast opens
 // behind one): RT64_STRETCH_SCREEN_COVERS stretches it across the picture (CMakeLists.txt).
 // The 2D rectangles' hook also joins a big image's tiles, which show their seams upscaled at any aspect.
@@ -12,8 +12,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
-#include <cstdio>
-#include <cstdlib>
 
 #include "recomp.h"
 #include "ultramodern/config.hpp"
@@ -78,6 +76,17 @@ extern "C" void dq_widen_cull_planes(uint8_t* rdram, gpr camera) {
         store_f32(rdram, plane + 0x8, c / length);
         store_f32(rdram, plane + 0xC, d / length);
     }
+}
+
+// The frame's clear: func_80028D58 has func_80082D04 clear the depth buffer each frame, and the colour image too
+// (flags 3) only in a level that draws no sky of its own over the whole screen: in the others (flags 2, Duckie
+// Mountain's levels among them) its 3D, sky and scenery, covers a 4:3 screen, so a console never shows what is under
+// it. A wide picture shows past what the level builds for that view, and nothing cleared there, so the 3D drawn over
+// it left trails of the frames before. Returns the flags to clear with: the colour too in a wide picture, a fill of
+// the level's fog colour that RT64 widens to the window's edges, as the levels with a clear have; the game's at
+// Original.
+extern "C" gpr dq_clear_flags(gpr flags) {
+    return widescreen_scale() > 1.0f ? (flags | 1) : flags;
 }
 
 // Keeps a scaled rectangle's texture coordinates inside its texture. RT64 puts a texel's centre on its whole coordinate,
@@ -339,25 +348,6 @@ extern "C" gpr dq_backdrop_x(uint8_t* rdram, gpr vertex, gpr x) {
     return (gpr)(int64_t)backdrop_x[i];
 }
 
-// DEBUG: which sky each level draws.
-static void dq_level_name(uint8_t* rdram, char* out) {
-    for (int i = 0; i < 15; i++) { out[i] = (char)MEM_B(i, (gpr)(int32_t)0x800E1B54); if (!out[i]) break; }
-    out[15] = 0;
-}
-extern "C" void dq_sky_mode(uint8_t* rdram, gpr object) {
-    static char last[16] = {};
-    static int last_mode = -2;
-    char name[16];
-    dq_level_name(rdram, name);
-    const int mode = object == 0 ? -1 : MEM_BU(0x76, object);
-    if (getenv("DQ_SKY_DUMP") && (strcmp(name, last) != 0 || mode != last_mode)) {
-        fprintf(stderr, "sky mode: level %s object %08X mode %d texture %08X menu %d\n", name, (uint32_t)object, mode,
-            (uint32_t)MEM_W(0, (gpr)(int32_t)0x800C3D74), MEM_BU(0, (gpr)(int32_t)0x800C0640));
-        strcpy(last, name);
-        last_mode = mode;
-    }
-}
-
 extern "C" void dq_widen_backdrop(uint8_t* rdram) {
     const float k = widescreen_scale();
     int lo = INT16_MAX, hi = INT16_MIN;
@@ -369,17 +359,6 @@ extern "C" void dq_widen_backdrop(uint8_t* rdram) {
         hi = std::max<int>(hi, backdrop_x[i]);
     }
     const float middle = (lo + hi) * 0.5f;
-    {
-        static char last[16] = {};
-        char name[16];
-        dq_level_name(rdram, name);
-        if (getenv("DQ_SKY_DUMP") && strcmp(name, last) != 0) {
-            fprintf(stderr, "backdrop mesh: level %s x %d..%d k %.3f\n", name, lo, hi, k);
-            for (int i = 0; i < backdrop_vertex_count; i++) fprintf(stderr, " %d,%d", backdrop_x[i], MEM_H(i * 0x10 + 2, backdrop_vertices));
-            fprintf(stderr, "\n");
-            strcpy(last, name);
-        }
-    }
     for (int i = 0; i < backdrop_vertex_count; i++) {
         const long x = k <= 1.0f ? backdrop_x[i] : std::lround(middle + (backdrop_x[i] - middle) * k);
         backdrop_written_x[i] = (int16_t)std::clamp<long>(x, INT16_MIN, INT16_MAX);
@@ -479,92 +458,6 @@ extern "C" int dq_wide_sprite(uint8_t* rdram, recomp_context* ctx) {
     write(ex_command(0x18), 0); // gEXPopScissor
     ctx->r2 = at;
     return 1;
-}
-
-// A level's sky: func_8008E718 draws it each frame with the 2D drawer (func_80091C5C, called at 0x8008EA58 with the
-// screen in a3) as texture rectangles over the 4:3 screen, its texture scrolled across as the camera turns. In a wide
-// picture the sides showed nothing of it, and since the frame's clear fills the screen only where a level has no sky
-// (func_80082D04's flag), they kept whatever the frames before left there: the 3D drawn over them left trails.
-// dq_sky_start writes the commands that open a scissor out to the picture's edges before the drawer's, and dq_sky_end
-// turns each rectangle that reaches a 4:3 edge into RT64's extended one, out to the picture's edge, its texture
-// coordinate there moved back by as much as the rectangle grew, so the sky runs on at the same scale; then puts the
-// scissor back. None at Original.
-static gpr sky_list = 0;
-static int32_t sky_width = 0, sky_height = 0;
-
-extern "C" gpr dq_sky_start(uint8_t* rdram, gpr list, gpr screen) {
-    sky_list = 0;
-    const float k = getenv("DQ_SKY_OFF") != nullptr ? 1.0f : widescreen_scale();
-    if (k <= 1.0f) {
-        return list;
-    }
-    sky_width = MEM_W(0x1C, screen) * 4;
-    sky_height = MEM_W(0x14, screen) * 4;
-    const int32_t left = -(int32_t)std::floor((k - 1.0f) * sky_width * 0.5f), right = sky_width - left;
-    gpr at = list;
-    auto write = [&](uint32_t w0, uint32_t w1) {
-        MEM_W(0, at) = (int32_t)w0;
-        MEM_W(4, at) = (int32_t)w1;
-        at += 8;
-    };
-    write(0x00525464u, (1u << 28) | 0x64u); // gEXEnable
-    write(ex_command(0x17), 0); // gEXPushScissor
-    write(ex_command(0x05), (ex_origin_none << 2) | (ex_origin_none << 14)); // gEXSetScissor, G_SC_NON_INTERLACE
-    write(((uint32_t)left & 0xFFFF) << 16, (((uint32_t)right & 0xFFFF) << 16) | ((uint32_t)sky_height & 0xFFFF));
-    sky_list = at;
-    return at;
-}
-
-extern "C" gpr dq_sky_end(uint8_t* rdram, gpr end) {
-    if (sky_list == 0) {
-        return end;
-    }
-    const gpr start = sky_list;
-    sky_list = 0;
-    static int dumps = 0;
-    const bool dump = getenv("DQ_SKY_DUMP") != nullptr && dumps < 3;
-    if (dump) {
-        dumps++;
-        fprintf(stderr, "sky list %08X-%08X screen %d x %d k %.3f\n", (uint32_t)start, (uint32_t)end, sky_width,
-            sky_height, widescreen_scale());
-        for (gpr c = start; c < end; c += 8) {
-            fprintf(stderr, "  %08X %08X\n", (uint32_t)MEM_W(0, c), (uint32_t)MEM_W(4, c));
-        }
-    }
-    const int32_t left = -(int32_t)std::floor((widescreen_scale() - 1.0f) * sky_width * 0.5f), right = sky_width - left;
-    for (gpr command = start; command + 24 <= end; command += 8) {
-        if (((uint32_t)MEM_W(0, command) >> 24) != 0xE4 || ((uint32_t)MEM_W(8, command) >> 24) != 0xB4 ||
-            ((uint32_t)MEM_W(16, command) >> 24) != 0xB3) {
-            continue;
-        }
-        // G_TEXRECT: right and bottom in the first word, the tile and left and top in the second, 10.2 each.
-        const uint32_t w0 = (uint32_t)MEM_W(0, command), w1 = (uint32_t)MEM_W(4, command);
-        int32_t x0 = (w1 >> 12) & 0xFFF, y0 = w1 & 0xFFF, x1 = (w0 >> 12) & 0xFFF, y1 = w0 & 0xFFF;
-        const uint32_t tile = (w1 >> 24) & 7;
-        const uint32_t coords = (uint32_t)MEM_W(12, command), steps = (uint32_t)MEM_W(20, command);
-        int32_t s = (int16_t)(coords >> 16);
-        const int32_t dsdx = (int16_t)(steps >> 16);
-        if (x0 <= 0) {
-            s -= ((x0 - left) * dsdx) >> 7;
-            x0 = left;
-        }
-        if (x1 >= sky_width - 4) {
-            x1 = right;
-        }
-        MEM_W(0, command) = (int32_t)ex_command(0x02); // gEXTextureRectangle
-        MEM_W(4, command) = (int32_t)(tile | (ex_origin_none << 3) | (ex_origin_none << 15));
-        MEM_W(8, command) = (int32_t)((((uint32_t)x0 & 0xFFFF) << 16) | ((uint32_t)y0 & 0xFFFF));
-        MEM_W(12, command) = (int32_t)((((uint32_t)x1 & 0xFFFF) << 16) | ((uint32_t)y1 & 0xFFFF));
-        MEM_W(16, command) = (int32_t)((((uint32_t)s & 0xFFFF) << 16) | (coords & 0xFFFF));
-        MEM_W(20, command) = (int32_t)steps;
-        if (dump) {
-            fprintf(stderr, "  rect %d,%d-%d,%d tile %u s %d\n", x0, y0, x1, y1, tile, s);
-        }
-        command += 16;
-    }
-    MEM_W(0, end) = (int32_t)ex_command(0x18); // gEXPopScissor
-    MEM_W(4, end) = 0;
-    return end + 8;
 }
 
 // The HUD: func_800B439C draws it each frame, its bars and then its icons (the counters' icons at the corners, a race's
@@ -767,17 +660,4 @@ extern "C" gpr dq_rings_rect_end(uint8_t* rdram, gpr end) {
     }
     rings_rect_aligned = false;
     return write_hud_unalign(rdram, end);
-}
-
-// DEBUG: per level, the frame clear's flags and whether the sky's function runs.
-extern "C" void dq_debug_event(uint8_t* rdram, int what, gpr value) {
-    static char last[3][16] = {};
-    static gpr last_value[3] = { (gpr)-1, (gpr)-1, (gpr)-1 };
-    char name[16];
-    dq_level_name(rdram, name);
-    if (getenv("DQ_SKY_DUMP") && (strcmp(name, last[what]) != 0 || value != last_value[what])) {
-        fprintf(stderr, "event %d: level %s value %llX\n", what, name, (unsigned long long)value);
-        strcpy(last[what], name);
-        last_value[what] = value;
-    }
 }

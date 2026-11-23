@@ -111,6 +111,15 @@ func = "func_80082D04"
 before_vram = 0x80082EF0
 text = "if (MEM_BU(0, (gpr)(int32_t)0x800C0640) != 0) ctx->r3 = 1;"
 
+# The frame's clear in a wide picture. func_80028D58 calls func_80082D04 at 0x80028F2C with its flags in a2: 3 (the
+# colour image and the depth buffer) where the level draws no sky of its own, 2 (the depth buffer alone) where its sky
+# and scenery cover a 4:3 screen. A wide picture shows past them, where nothing was cleared, so the 3D left trails
+# there; src/game/widescreen.cpp has the colour cleared too (none at Original).
+[[patches.hook]]
+func = "func_80028D58"
+before_vram = 0x80028F2C
+text = "{ gpr dq_clear_flags(gpr); ctx->r6 = dq_clear_flags(ctx->r6); }"
+
 # Widescreen culling. func_80093B8C sets a camera up for a frame: its fields of view (+0x64 across, +0x68 up), its
 # projection (guPerspective) and the four planes at +0x98 that the game tests what it draws against, built for 4:3.
 # RT64 widens the 3D to the window but the game left out whatever was past those planes, so in a wide picture objects
@@ -129,35 +138,6 @@ text = "{ void dq_widen_cull_planes(uint8_t*, gpr); dq_widen_cull_planes(rdram, 
 func = "func_80091C5C"
 before_vram = 0x8009268C
 text = "{ void dq_fix_rect(uint8_t*, gpr, gpr); dq_fix_rect(rdram, ctx->r17, ctx->r5); }"
-
-# A level's sky: func_8008E718 has the 2D drawer (func_80091C5C) draw it as texture rectangles over the 4:3 screen at
-# 0x8008EA58 (the list in a0, the screen in a3), and the drawer returns the list's end at 0x8008EA60 (v0), where a
-# menu's gradient (func_800931E8) joins it. src/game/widescreen.cpp draws the sky out to the wide picture's edges there
-# (none at Original).
-[[patches.hook]]
-func = "func_80082D04"
-before_vram = 0x80082D04
-text = "{ void dq_debug_event(uint8_t*, int, gpr); dq_debug_event(rdram, 0, ctx->r6); }"
-
-[[patches.hook]]
-func = "func_8008E718"
-before_vram = 0x8008E764
-text = "{ void dq_debug_event(uint8_t*, int, gpr); dq_debug_event(rdram, 1, ctx->r2); }"
-
-[[patches.hook]]
-func = "func_8008E718"
-before_vram = 0x8008E7CC
-text = "{ void dq_sky_mode(uint8_t*, gpr); dq_sky_mode(rdram, ctx->r16); }"
-
-[[patches.hook]]
-func = "func_8008E718"
-before_vram = 0x8008EA58
-text = "{ gpr dq_sky_start(uint8_t*, gpr, gpr); ctx->r4 = dq_sky_start(rdram, ctx->r4, ctx->r7); }"
-
-[[patches.hook]]
-func = "func_8008E718"
-before_vram = 0x8008EA60
-text = "{ gpr dq_sky_end(uint8_t*, gpr); ctx->r2 = dq_sky_end(rdram, ctx->r2); }"
 
 # The sprites' clip to the screen, func_80091AF0, which the 2D drawer (func_80091C5C) draws one through: at its start
 # src/game/widescreen.cpp draws one that reaches past a 4:3 screen's edges out to the wide picture's (none at Original,
