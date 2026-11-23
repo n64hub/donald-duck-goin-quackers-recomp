@@ -351,8 +351,7 @@ extern "C" void dq_sky_mode(uint8_t* rdram, gpr object) {
     dq_level_name(rdram, name);
     const int mode = object == 0 ? -1 : MEM_BU(0x76, object);
     if (getenv("DQ_SKY_DUMP") && (strcmp(name, last) != 0 || mode != last_mode)) {
-        fprintf(stderr, "sky mode: level %s object %08X mode %d texture %08X menu %d
-", name, (uint32_t)object, mode,
+        fprintf(stderr, "sky mode: level %s object %08X mode %d texture %08X menu %d\n", name, (uint32_t)object, mode,
             (uint32_t)MEM_W(0, (gpr)(int32_t)0x800C3D74), MEM_BU(0, (gpr)(int32_t)0x800C0640));
         strcpy(last, name);
         last_mode = mode;
@@ -375,11 +374,9 @@ extern "C" void dq_widen_backdrop(uint8_t* rdram) {
         char name[16];
         dq_level_name(rdram, name);
         if (getenv("DQ_SKY_DUMP") && strcmp(name, last) != 0) {
-            fprintf(stderr, "backdrop mesh: level %s x %d..%d k %.3f
-", name, lo, hi, k);
+            fprintf(stderr, "backdrop mesh: level %s x %d..%d k %.3f\n", name, lo, hi, k);
             for (int i = 0; i < backdrop_vertex_count; i++) fprintf(stderr, " %d,%d", backdrop_x[i], MEM_H(i * 0x10 + 2, backdrop_vertices));
-            fprintf(stderr, "
-");
+            fprintf(stderr, "\n");
             strcpy(last, name);
         }
     }
