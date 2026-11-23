@@ -339,6 +339,26 @@ extern "C" gpr dq_backdrop_x(uint8_t* rdram, gpr vertex, gpr x) {
     return (gpr)(int64_t)backdrop_x[i];
 }
 
+// DEBUG: which sky each level draws.
+static void dq_level_name(uint8_t* rdram, char* out) {
+    for (int i = 0; i < 15; i++) { out[i] = (char)MEM_B(i, (gpr)(int32_t)0x800E1B54); if (!out[i]) break; }
+    out[15] = 0;
+}
+extern "C" void dq_sky_mode(uint8_t* rdram, gpr object) {
+    static char last[16] = {};
+    static int last_mode = -2;
+    char name[16];
+    dq_level_name(rdram, name);
+    const int mode = object == 0 ? -1 : MEM_BU(0x76, object);
+    if (getenv("DQ_SKY_DUMP") && (strcmp(name, last) != 0 || mode != last_mode)) {
+        fprintf(stderr, "sky mode: level %s object %08X mode %d texture %08X menu %d
+", name, (uint32_t)object, mode,
+            (uint32_t)MEM_W(0, (gpr)(int32_t)0x800C3D74), MEM_BU(0, (gpr)(int32_t)0x800C0640));
+        strcpy(last, name);
+        last_mode = mode;
+    }
+}
+
 extern "C" void dq_widen_backdrop(uint8_t* rdram) {
     const float k = widescreen_scale();
     int lo = INT16_MAX, hi = INT16_MIN;
@@ -350,6 +370,19 @@ extern "C" void dq_widen_backdrop(uint8_t* rdram) {
         hi = std::max<int>(hi, backdrop_x[i]);
     }
     const float middle = (lo + hi) * 0.5f;
+    {
+        static char last[16] = {};
+        char name[16];
+        dq_level_name(rdram, name);
+        if (getenv("DQ_SKY_DUMP") && strcmp(name, last) != 0) {
+            fprintf(stderr, "backdrop mesh: level %s x %d..%d k %.3f
+", name, lo, hi, k);
+            for (int i = 0; i < backdrop_vertex_count; i++) fprintf(stderr, " %d,%d", backdrop_x[i], MEM_H(i * 0x10 + 2, backdrop_vertices));
+            fprintf(stderr, "
+");
+            strcpy(last, name);
+        }
+    }
     for (int i = 0; i < backdrop_vertex_count; i++) {
         const long x = k <= 1.0f ? backdrop_x[i] : std::lround(middle + (backdrop_x[i] - middle) * k);
         backdrop_written_x[i] = (int16_t)std::clamp<long>(x, INT16_MIN, INT16_MAX);

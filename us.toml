@@ -136,6 +136,11 @@ text = "{ void dq_fix_rect(uint8_t*, gpr, gpr); dq_fix_rect(rdram, ctx->r17, ctx
 # (none at Original).
 [[patches.hook]]
 func = "func_8008E718"
+before_vram = 0x8008E7CC
+text = "{ void dq_sky_mode(uint8_t*, gpr); dq_sky_mode(rdram, ctx->r16); }"
+
+[[patches.hook]]
+func = "func_8008E718"
 before_vram = 0x8008EA58
 text = "{ gpr dq_sky_start(uint8_t*, gpr, gpr); ctx->r4 = dq_sky_start(rdram, ctx->r4, ctx->r7); }"
 
